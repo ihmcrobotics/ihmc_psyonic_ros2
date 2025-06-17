@@ -44,12 +44,8 @@ public class AbilityHandCommunication
    {
       if (commandListener.flushAndGetLatest(commandMessage, handToPack.getHandSide()))
       {
-         handToPack.setIndexFingerPositionCommand(commandMessage.getFingerPositionsDegrees()[0]);
-         handToPack.setMiddleFingerPositionCommand(commandMessage.getFingerPositionsDegrees()[1]);
-         handToPack.setRingFingerPositionCommand(commandMessage.getFingerPositionsDegrees()[2]);
-         handToPack.setPinkyFingerPositionCommand(commandMessage.getFingerPositionsDegrees()[3]);
-         handToPack.setThumbFlexorPositionCommand(commandMessage.getFingerPositionsDegrees()[4]);
-         handToPack.setThumbRotatorPositionCommand(commandMessage.getFingerPositionsDegrees()[5]);
+         handToPack.setCommandType(AbilityHandCommandType.fromByte(commandMessage.getCommandType()));
+         handToPack.setCommandValues(commandMessage.getCommandValues());
       }
    }
 
@@ -61,12 +57,7 @@ public class AbilityHandCommunication
    public void publishState(AbilityHandInterface handToPublish)
    {
       stateMessage.setHandSide(handToPublish.getHandSide().toByte());
-      stateMessage.getFingerPositionsDegrees()[0] = handToPublish.getIndexFingerPositionStatus();
-      stateMessage.getFingerPositionsDegrees()[1] = handToPublish.getMiddleFingerPositionStatus();
-      stateMessage.getFingerPositionsDegrees()[2] = handToPublish.getRingFingerPositionStatus();
-      stateMessage.getFingerPositionsDegrees()[3] = handToPublish.getPinkyFingerPositionStatus();
-      stateMessage.getFingerPositionsDegrees()[4] = handToPublish.getThumbFlexorPositionStatus();
-      stateMessage.getFingerPositionsDegrees()[5] = handToPublish.getThumbRotatorPositionStatus();
+      System.arraycopy(handToPublish.getFingerPositionsDegrees(), 0, stateMessage.getFingerPositionsDegrees(), 0, AbilityHandInterface.ACTUATOR_COUNT);
 
       statePublisher.publish(stateMessage);
    }

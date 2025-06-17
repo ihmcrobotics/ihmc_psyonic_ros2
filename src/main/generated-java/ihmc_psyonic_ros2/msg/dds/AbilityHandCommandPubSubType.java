@@ -15,7 +15,7 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    @Override
    public final java.lang.String getDefinitionChecksum()
    {
-   		return "86a940796e14f35db611fcab7c49a593ad5ecbe5b9026e554eda46d5c9823618";
+   		return "4a6f7769f1a92de2743b25d18d03b92f2f0dee01acbc3ed43a35c055293a71a1";
    }
    
    @Override
@@ -54,6 +54,8 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
 
       current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
 
+      current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
+
       current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
 
 
@@ -72,6 +74,9 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
       current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
 
 
+      current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
+
+
       current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
 
       return current_alignment - initial_alignment;
@@ -81,9 +86,11 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    {
       cdr.write_type_9(data.getHandSide());
 
-      for(int i0 = 0; i0 < data.getFingerPositionsDegrees().length; ++i0)
+      cdr.write_type_9(data.getCommandType());
+
+      for(int i0 = 0; i0 < data.getCommandValues().length; ++i0)
       {
-        	cdr.write_type_5(data.getFingerPositionsDegrees()[i0]);	
+        	cdr.write_type_5(data.getCommandValues()[i0]);	
       }
 
    }
@@ -92,9 +99,11 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    {
       data.setHandSide(cdr.read_type_9());
       	
-      for(int i0 = 0; i0 < data.getFingerPositionsDegrees().length; ++i0)
+      data.setCommandType(cdr.read_type_9());
+      	
+      for(int i0 = 0; i0 < data.getCommandValues().length; ++i0)
       {
-        	data.getFingerPositionsDegrees()[i0] = cdr.read_type_5();
+        	data.getCommandValues()[i0] = cdr.read_type_5();
         	
       }
       	
@@ -105,14 +114,16 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    public final void serialize(ihmc_psyonic_ros2.msg.dds.AbilityHandCommand data, us.ihmc.idl.InterchangeSerializer ser)
    {
       ser.write_type_9("hand_side", data.getHandSide());
-      ser.write_type_f("finger_positions_degrees", data.getFingerPositionsDegrees());
+      ser.write_type_9("command_type", data.getCommandType());
+      ser.write_type_f("command_values", data.getCommandValues());
    }
 
    @Override
    public final void deserialize(us.ihmc.idl.InterchangeSerializer ser, ihmc_psyonic_ros2.msg.dds.AbilityHandCommand data)
    {
       data.setHandSide(ser.read_type_9("hand_side"));
-      ser.read_type_f("finger_positions_degrees", data.getFingerPositionsDegrees());
+      data.setCommandType(ser.read_type_9("command_type"));
+      ser.read_type_f("command_values", data.getCommandValues());
    }
 
    public static void staticCopy(ihmc_psyonic_ros2.msg.dds.AbilityHandCommand src, ihmc_psyonic_ros2.msg.dds.AbilityHandCommand dest)

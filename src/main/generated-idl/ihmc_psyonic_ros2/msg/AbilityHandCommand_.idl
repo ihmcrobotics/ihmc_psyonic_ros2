@@ -22,7 +22,11 @@ module ihmc_psyonic_ros2
          */
         @defaultValue(value=255)
         octet hand_side;
-        float finger_positions_degrees[6];
+        /**
+         * Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+         */
+        octet command_type;
+        float command_values[6];
       };
     };
   };
