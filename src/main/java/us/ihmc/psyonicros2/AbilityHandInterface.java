@@ -16,6 +16,7 @@ public interface AbilityHandInterface
    void setPinkyFingerPositionCommand(float degrees);
    void setThumbFlexorPositionCommand(float degrees);
    void setThumbRotatorPositionCommand(float degrees);
+   void setHandPositions(float[] positions);
 
    // Getters for status
    float getIndexFingerPositionStatus();
@@ -24,4 +25,5 @@ public interface AbilityHandInterface
    float getPinkyFingerPositionStatus();
    float getThumbFlexorPositionStatus();
    float getThumbRotatorPositionStatus();
+   float[] getHandPositions();
 }
