@@ -1,0 +1,31 @@
+#ifndef __ihmc_psyonic_ros2__msg__AbilityHandCommand__idl__
+#define __ihmc_psyonic_ros2__msg__AbilityHandCommand__idl__
+
+module ihmc_psyonic_ros2
+{
+  module msg
+  {
+    module dds
+    {
+      const octet LEFT =
+      0;
+
+      const octet RIGHT =
+      1;
+
+
+      @TypeCode(type="ihmc_psyonic_ros2::msg::dds_::AbilityHandCommand_")
+      struct AbilityHandCommand
+      {
+        /**
+         * Specifies the side of the robot of the hand being referred to
+         */
+        @defaultValue(value=255)
+        octet hand_side;
+        float finger_positions_degrees[6];
+      };
+    };
+  };
+};
+
+#endif
