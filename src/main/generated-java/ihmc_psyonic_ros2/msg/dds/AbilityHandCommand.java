@@ -14,11 +14,15 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
             * Specifies the side of the robot of the hand being referred to
             */
    public byte hand_side_ = (byte) 255;
-   public float[] finger_positions_degrees_;
+   /**
+            * Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+            */
+   public byte command_type_;
+   public float[] command_values_;
 
    public AbilityHandCommand()
    {
-      finger_positions_degrees_ = new float[6];
+      command_values_ = new float[6];
 
    }
 
@@ -32,9 +36,11 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
    {
       hand_side_ = other.hand_side_;
 
-      for(int i1 = 0; i1 < finger_positions_degrees_.length; ++i1)
+      command_type_ = other.command_type_;
+
+      for(int i1 = 0; i1 < command_values_.length; ++i1)
       {
-            finger_positions_degrees_[i1] = other.finger_positions_degrees_[i1];
+            command_values_[i1] = other.command_values_[i1];
 
       }
 
@@ -55,10 +61,25 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
       return hand_side_;
    }
 
-
-   public float[] getFingerPositionsDegrees()
+   /**
+            * Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+            */
+   public void setCommandType(byte command_type)
    {
-      return finger_positions_degrees_;
+      command_type_ = command_type;
+   }
+   /**
+            * Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+            */
+   public byte getCommandType()
+   {
+      return command_type_;
+   }
+
+
+   public float[] getCommandValues()
+   {
+      return command_values_;
    }
 
 
@@ -81,9 +102,11 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
 
       if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.hand_side_, other.hand_side_, epsilon)) return false;
 
-      for(int i3 = 0; i3 < finger_positions_degrees_.length; ++i3)
+      if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.command_type_, other.command_type_, epsilon)) return false;
+
+      for(int i3 = 0; i3 < command_values_.length; ++i3)
       {
-                if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.finger_positions_degrees_[i3], other.finger_positions_degrees_[i3], epsilon)) return false;
+                if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.command_values_[i3], other.command_values_[i3], epsilon)) return false;
       }
 
 
@@ -101,9 +124,11 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
 
       if(this.hand_side_ != otherMyClass.hand_side_) return false;
 
-      for(int i5 = 0; i5 < finger_positions_degrees_.length; ++i5)
+      if(this.command_type_ != otherMyClass.command_type_) return false;
+
+      for(int i5 = 0; i5 < command_values_.length; ++i5)
       {
-                if(this.finger_positions_degrees_[i5] != otherMyClass.finger_positions_degrees_[i5]) return false;
+                if(this.command_values_[i5] != otherMyClass.command_values_[i5]) return false;
 
       }
 
@@ -118,8 +143,10 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
       builder.append("AbilityHandCommand {");
       builder.append("hand_side=");
       builder.append(this.hand_side_);      builder.append(", ");
-      builder.append("finger_positions_degrees=");
-      builder.append(java.util.Arrays.toString(this.finger_positions_degrees_));
+      builder.append("command_type=");
+      builder.append(this.command_type_);      builder.append(", ");
+      builder.append("command_values=");
+      builder.append(java.util.Arrays.toString(this.command_values_));
       builder.append("}");
       return builder.toString();
    }

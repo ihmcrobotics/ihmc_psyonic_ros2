@@ -4,4 +4,7 @@ byte RIGHT=1
 # Specifies the side of the robot of the hand being referred to
 byte hand_side 255
 
-float32[6] finger_positions_degrees
+# Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+byte command_type
+
+float32[6] command_values

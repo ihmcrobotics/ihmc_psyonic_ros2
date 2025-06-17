@@ -4,28 +4,76 @@ import us.ihmc.robotics.robotSide.RobotSide;
 
 public interface AbilityHandInterface
 {
-   /**
-    * Updates the state of this object.
-    * Involves writing the command values to the hand
-    * and reading the status from the hand.
-    */
-   void update();
+   int ACTUATOR_COUNT = 6;
 
+   /**
+    * Get this hand's side.
+    *
+    * @return This hand's side.
+    */
    RobotSide getHandSide();
 
-   // Setters for command
-   void setIndexFingerPositionCommand(float degrees);
-   void setMiddleFingerPositionCommand(float degrees);
-   void setRingFingerPositionCommand(float degrees);
-   void setPinkyFingerPositionCommand(float degrees);
-   void setThumbFlexorPositionCommand(float degrees);
-   void setThumbRotatorPositionCommand(float degrees);
+   /**
+    * Get the current {@link AbilityHandCommandType}.
+    *
+    * @return The current command type.
+    */
+   AbilityHandCommandType getCommandType();
 
-   // Getters for status
-   float getIndexFingerPositionStatus();
-   float getMiddleFingerPositionStatus();
-   float getRingFingerPositionStatus();
-   float getPinkyFingerPositionStatus();
-   float getThumbFlexorPositionStatus();
-   float getThumbRotatorPositionStatus();
+   /**
+    * Set the current {@link AbilityHandCommandType}.
+    *
+    * @param commandType The command type.
+    */
+   void setCommandType(AbilityHandCommandType commandType);
+
+   /**
+    * Get the command array. It is a {@link #ACTUATOR_COUNT} long array with the following indices:
+    * <ol start="0">
+    *    <li>Index finger command</li>
+    *    <li>Middle finger command</li>
+    *    <li>Ring finger command</li>
+    *    <li>Pinky finger command</li>
+    *    <li>Thumb flexor command</li>
+    *    <li>Thumb rotator command</li>
+    * </ol>
+    *
+    * @return The command array.
+    */
+   float[] getCommandValues();
+
+   /**
+    * Set the command values.
+    *
+    * @param values The command values.
+    */
+   default void setCommandValues(float[] values)
+   {
+      System.arraycopy(values, 0, getCommandValues(), 0, 6);
+   }
+
+   /**
+    * Get the finger position array. It is a {@link #ACTUATOR_COUNT} long array with the following indices:
+    * <ol start="0">
+    *    <li>Index finger position</li>
+    *    <li>Middle finger position</li>
+    *    <li>Ring finger position</li>
+    *    <li>Pinky finger position</li>
+    *    <li>Thumb flexor position</li>
+    *    <li>Thumb rotator position</li>
+    * </ol>
+    *
+    * @return The finger position array.
+    */
+   float[] getFingerPositionsDegrees();
+
+   /**
+    * Set the current finger positions. Should be set from values read from the hand.
+    *
+    * @param positionsDegrees Array of finger positions in degrees.
+    */
+   default void setFingerPositions(float[] positionsDegrees)
+   {
+      System.arraycopy(positionsDegrees, 0, getFingerPositionsDegrees(), 0, 6);
+   }
 }
