@@ -9,12 +9,17 @@ ihmc {
    openSource = false
 
    configureDependencyResolution()
+
+   resourceDirectory("main", "generated-idl")
+   javaDirectory("main", "generated-java")
+
    configurePublications()
 }
 
 mainDependencies {
-   api("us.ihmc:ihmc-commons:0.35.1")
    api("us.ihmc:ros2-library:1.2.3")
+   api("us.ihmc:ihmc-commons:0.35.1")
+   api("us.ihmc:ihmc-robotics-tools:0.15.4")
 }
 
 val generator = us.ihmc.ros2.rosidl.ROS2InterfaceGenerator()

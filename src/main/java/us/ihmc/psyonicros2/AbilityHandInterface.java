@@ -1,5 +1,7 @@
 package us.ihmc.psyonicros2;
 
+import us.ihmc.robotics.robotSide.RobotSide;
+
 public interface AbilityHandInterface
 {
    /**
@@ -8,6 +10,8 @@ public interface AbilityHandInterface
     * and reading the status from the hand.
     */
    void update();
+
+   RobotSide getHandSide();
 
    // Setters for command
    void setIndexFingerPositionCommand(float degrees);
