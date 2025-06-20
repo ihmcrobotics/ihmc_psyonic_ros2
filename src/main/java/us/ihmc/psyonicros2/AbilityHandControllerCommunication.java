@@ -5,34 +5,33 @@ import ihmc_psyonic_ros2.msg.dds.AbilityHandState;
 import us.ihmc.ros2.ROS2NodeBuilder;
 import us.ihmc.ros2.ROS2Publisher;
 import us.ihmc.ros2.ROS2Subscription;
-import us.ihmc.ros2.ROS2Topic;
 import us.ihmc.ros2.RealtimeROS2Node;
 
-public class AbilityHandCommunication
+/**
+ * <p>Hardware side ROS 2 communication for the {@link AbilityHandInterface}. Communicates with external controller.</p>
+ * <p>Subscribes to {@link AbilityHandCommand} messages and publishes {@link AbilityHandState} messages.</p>
+ */
+public class AbilityHandControllerCommunication
 {
-   private static final ROS2Topic<?> ROOT = new ROS2Topic<>();
-   private static final ROS2Topic<AbilityHandState> STATE_TOPIC = ROOT.withModule("ability_hand_state").withType(AbilityHandState.class);
-   private static final ROS2Topic<AbilityHandCommand> COMMAND_TOPIC = ROOT.withModule("ability_hand_command").withType(AbilityHandCommand.class);
-
    private final RealtimeROS2Node node;
 
    private final AbilityHandState stateMessage;
    private final ROS2Publisher<AbilityHandState> statePublisher;
 
    private final AbilityHandCommand commandMessage;
-   private final AbilityHandCommandListener commandListener;
+   private final AbilityHandMessageListener<AbilityHandCommand> commandListener;
    private final ROS2Subscription<AbilityHandCommand> commandSubscription;
 
-   public AbilityHandCommunication(String nodeName)
+   public AbilityHandControllerCommunication(String nodeName)
    {
       node = new ROS2NodeBuilder().buildRealtime(nodeName);
 
       stateMessage = new AbilityHandState();
-      statePublisher = node.createPublisher(STATE_TOPIC);
+      statePublisher = node.createPublisher(AbilityHandROS2API.STATE_TOPIC);
 
       commandMessage = new AbilityHandCommand();
-      commandListener = new AbilityHandCommandListener();
-      commandSubscription = node.createSubscription(COMMAND_TOPIC, commandListener);
+      commandListener = new AbilityHandMessageListener<>(AbilityHandCommand::new);
+      commandSubscription = node.createSubscription(AbilityHandROS2API.COMMAND_TOPIC, commandListener);
    }
 
    /**
@@ -65,7 +64,7 @@ public class AbilityHandCommunication
    /**
     * Initialize the communication. No messages will be received or published until this method is called.
     */
-   public void initialize()
+   public void start()
    {
       node.spin();
    }
@@ -73,7 +72,7 @@ public class AbilityHandCommunication
    /**
     * Shut the communications down. Messages will no longer be received or published.
     */
-   public void shutDown()
+   public void shutdown()
    {
       node.stopSpinning();
 

@@ -2,6 +2,9 @@ package us.ihmc.psyonicros2;
 
 import java.util.EnumSet;
 
+/**
+ * Command type for the Ability Hand.
+ */
 public enum AbilityHandCommandType
 {
    POSITION, VELOCITY, CURRENT, DUTY;

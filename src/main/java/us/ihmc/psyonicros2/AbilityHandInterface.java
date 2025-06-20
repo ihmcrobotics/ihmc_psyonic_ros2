@@ -2,6 +2,10 @@ package us.ihmc.psyonicros2;
 
 import us.ihmc.robotics.robotSide.RobotSide;
 
+/**
+ * <p>Generic interface for an Ability Hand.</p>
+ * <p>Currently only supports command and finger position values.</p>
+ */
 public interface AbilityHandInterface
 {
    int ACTUATOR_COUNT = 6;
@@ -49,7 +53,7 @@ public interface AbilityHandInterface
     */
    default void setCommandValues(float[] values)
    {
-      System.arraycopy(values, 0, getCommandValues(), 0, 6);
+      System.arraycopy(values, 0, getCommandValues(), 0, ACTUATOR_COUNT);
    }
 
    /**
@@ -74,6 +78,6 @@ public interface AbilityHandInterface
     */
    default void setFingerPositions(float[] positionsDegrees)
    {
-      System.arraycopy(positionsDegrees, 0, getFingerPositionsDegrees(), 0, 6);
+      System.arraycopy(positionsDegrees, 0, getFingerPositionsDegrees(), 0, ACTUATOR_COUNT);
    }
 }

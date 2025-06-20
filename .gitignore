@@ -1,4 +1,7 @@
+*/src/*/out
+
 **/build
+**/out
 **/gradle
 **/.gradle
 **/.idea
