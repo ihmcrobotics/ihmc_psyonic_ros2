@@ -47,6 +47,14 @@ public interface AbilityHandInterface
    float[] getCommandValues();
 
    /**
+    * Should be called after updating command values.
+    */
+   default void afterCommandValuesUpdate()
+   {
+      // Do nothing by default.
+   }
+
+   /**
     * Set the command values.
     *
     * @param values The command values.
@@ -54,6 +62,7 @@ public interface AbilityHandInterface
    default void setCommandValues(float[] values)
    {
       System.arraycopy(values, 0, getCommandValues(), 0, ACTUATOR_COUNT);
+      afterCommandValuesUpdate();
    }
 
    /**
@@ -72,6 +81,14 @@ public interface AbilityHandInterface
    float[] getFingerPositionsDegrees();
 
    /**
+    * Should be called after updating finger positions.
+    */
+   default void afterFingerPositionsUpdate()
+   {
+      // Do nothing by default.
+   }
+
+   /**
     * Set the current finger positions. Should be set from values read from the hand.
     *
     * @param positionsDegrees Array of finger positions in degrees.
@@ -79,5 +96,6 @@ public interface AbilityHandInterface
    default void setFingerPositions(float[] positionsDegrees)
    {
       System.arraycopy(positionsDegrees, 0, getFingerPositionsDegrees(), 0, ACTUATOR_COUNT);
+      afterFingerPositionsUpdate();
    }
 }
