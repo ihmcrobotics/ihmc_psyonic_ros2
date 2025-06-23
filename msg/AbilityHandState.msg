@@ -4,4 +4,5 @@ byte RIGHT=1
 # Specifies the side of the robot of the hand being referred to
 byte hand_side 255
 
-float32[6] finger_positions_degrees
+# The actuator positions in degrees
+float32[6] actuator_positions

@@ -11,7 +11,6 @@ class TestAbilityHand implements AbilityHandInterface
    private final float[] commandValues = new float[ACTUATOR_COUNT];
    private final float[] fingerPositions = new float[ACTUATOR_COUNT];
 
-
    public TestAbilityHand(RobotSide handSide)
    {
       this.handSide = handSide;
@@ -36,14 +35,26 @@ class TestAbilityHand implements AbilityHandInterface
    }
 
    @Override
-   public float[] getCommandValues()
+   public float getCommandValue(int index)
    {
-      return commandValues;
+      return commandValues[index];
    }
 
    @Override
-   public float[] getFingerPositionsDegrees()
+   public void setCommandValue(int index, float value)
    {
-      return fingerPositions;
+      commandValues[index] = value;
+   }
+
+   @Override
+   public float getActuatorPosition(int index)
+   {
+      return fingerPositions[index];
+   }
+
+   @Override
+   public void setActuatorPosition(int index, float value)
+   {
+      fingerPositions[index] = value;
    }
 }

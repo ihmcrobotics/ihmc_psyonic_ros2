@@ -22,7 +22,10 @@ module ihmc_psyonic_ros2
          */
         @defaultValue(value=255)
         octet hand_side;
-        float finger_positions_degrees[6];
+        /**
+         * The actuator positions in degrees
+         */
+        float actuator_positions[6];
       };
     };
   };

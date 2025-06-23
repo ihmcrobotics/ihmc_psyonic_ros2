@@ -4,6 +4,18 @@ import us.ihmc.robotics.robotSide.RobotSide;
 
 /**
  * <p>Generic interface for an Ability Hand.</p>
+ * <p>
+ * The hand's finger actuators are specified using the following indices:
+ *    <ol start = 0>
+ *       <li>Index finger</li>
+ *       <li>Middle finger</li>
+ *       <li>Ring finger</li>
+ *       <li>Pinky finger</li>
+ *       <li>Thumb flexor</li>
+ *       <li>Thumb rotator</li>
+ *    </ol>
+ * </p>
+ *
  * <p>Currently only supports command and finger position values.</p>
  */
 public interface AbilityHandInterface
@@ -32,19 +44,20 @@ public interface AbilityHandInterface
    void setCommandType(AbilityHandCommandType commandType);
 
    /**
-    * Get the command array. It is a {@link #ACTUATOR_COUNT} long array with the following indices:
-    * <ol start="0">
-    *    <li>Index finger command</li>
-    *    <li>Middle finger command</li>
-    *    <li>Ring finger command</li>
-    *    <li>Pinky finger command</li>
-    *    <li>Thumb flexor command</li>
-    *    <li>Thumb rotator command</li>
-    * </ol>
+    * Get the command value at the specified index.
     *
-    * @return The command array.
+    * @param index Index to read the value from.
+    * @return The command value.
     */
-   float[] getCommandValues();
+   float getCommandValue(int index);
+
+   /**
+    * Set the command value at the specified index.
+    *
+    * @param index Index at which to set the value.
+    * @param value The value to set.
+    */
+   void setCommandValue(int index, float value);
 
    /**
     * Set the command values.
@@ -53,31 +66,34 @@ public interface AbilityHandInterface
     */
    default void setCommandValues(float[] values)
    {
-      System.arraycopy(values, 0, getCommandValues(), 0, ACTUATOR_COUNT);
+      for (int i = 0; i < ACTUATOR_COUNT && i < values.length; ++i)
+         setCommandValue(i, values[i]);
    }
 
    /**
-    * Get the finger position array. It is a {@link #ACTUATOR_COUNT} long array with the following indices:
-    * <ol start="0">
-    *    <li>Index finger position</li>
-    *    <li>Middle finger position</li>
-    *    <li>Ring finger position</li>
-    *    <li>Pinky finger position</li>
-    *    <li>Thumb flexor position</li>
-    *    <li>Thumb rotator position</li>
-    * </ol>
+    * Get the position of the actuator at the specified index.
     *
-    * @return The finger position array.
+    * @param index Index to read the position from.
+    * @return The position value in degrees.
     */
-   float[] getFingerPositionsDegrees();
+   float getActuatorPosition(int index);
 
    /**
-    * Set the current finger positions. Should be set from values read from the hand.
+    * Set the position of the actuator at the specified index.
     *
-    * @param positionsDegrees Array of finger positions in degrees.
+    * @param index Index at which to set the position value, in degrees.
+    * @param value The value to set
     */
-   default void setFingerPositions(float[] positionsDegrees)
+   void setActuatorPosition(int index, float value);
+
+   /**
+    * Set the actuator positions.
+    *
+    * @param positions The actuator positions, in degrees.
+    */
+   default void setActuatorPositions(float[] positions)
    {
-      System.arraycopy(positionsDegrees, 0, getFingerPositionsDegrees(), 0, ACTUATOR_COUNT);
+      for (int i = 0; i < ACTUATOR_COUNT && i < positions.length; ++i)
+         setActuatorPosition(i, positions[i]);
    }
 }

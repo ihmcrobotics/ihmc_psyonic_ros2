@@ -56,7 +56,8 @@ public class AbilityHandControllerCommunication
    public void publishState(AbilityHandInterface handToPublish)
    {
       stateMessage.setHandSide(handToPublish.getHandSide().toByte());
-      System.arraycopy(handToPublish.getFingerPositionsDegrees(), 0, stateMessage.getFingerPositionsDegrees(), 0, AbilityHandInterface.ACTUATOR_COUNT);
+      for (int i = 0; i < AbilityHandInterface.ACTUATOR_COUNT; ++i)
+         stateMessage.getActuatorPositions()[i] = handToPublish.getActuatorPosition(i);
 
       statePublisher.publish(stateMessage);
    }

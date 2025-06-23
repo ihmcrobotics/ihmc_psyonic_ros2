@@ -15,7 +15,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    @Override
    public final java.lang.String getDefinitionChecksum()
    {
-   		return "b7de2af058036b6227c188672f842857188877c291c7a041fbf43dd13cbdbd63";
+   		return "89122bf0f447ebfd49ba92892e1e205608bdb0038617069335ebfdd42ed4a6d8";
    }
    
    @Override
@@ -81,9 +81,9 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    {
       cdr.write_type_9(data.getHandSide());
 
-      for(int i0 = 0; i0 < data.getFingerPositionsDegrees().length; ++i0)
+      for(int i0 = 0; i0 < data.getActuatorPositions().length; ++i0)
       {
-        	cdr.write_type_5(data.getFingerPositionsDegrees()[i0]);	
+        	cdr.write_type_5(data.getActuatorPositions()[i0]);	
       }
 
    }
@@ -92,9 +92,9 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    {
       data.setHandSide(cdr.read_type_9());
       	
-      for(int i0 = 0; i0 < data.getFingerPositionsDegrees().length; ++i0)
+      for(int i0 = 0; i0 < data.getActuatorPositions().length; ++i0)
       {
-        	data.getFingerPositionsDegrees()[i0] = cdr.read_type_5();
+        	data.getActuatorPositions()[i0] = cdr.read_type_5();
         	
       }
       	
@@ -105,14 +105,14 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    public final void serialize(ihmc_psyonic_ros2.msg.dds.AbilityHandState data, us.ihmc.idl.InterchangeSerializer ser)
    {
       ser.write_type_9("hand_side", data.getHandSide());
-      ser.write_type_f("finger_positions_degrees", data.getFingerPositionsDegrees());
+      ser.write_type_f("actuator_positions", data.getActuatorPositions());
    }
 
    @Override
    public final void deserialize(us.ihmc.idl.InterchangeSerializer ser, ihmc_psyonic_ros2.msg.dds.AbilityHandState data)
    {
       data.setHandSide(ser.read_type_9("hand_side"));
-      ser.read_type_f("finger_positions_degrees", data.getFingerPositionsDegrees());
+      ser.read_type_f("actuator_positions", data.getActuatorPositions());
    }
 
    public static void staticCopy(ihmc_psyonic_ros2.msg.dds.AbilityHandState src, ihmc_psyonic_ros2.msg.dds.AbilityHandState dest)

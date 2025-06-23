@@ -44,7 +44,7 @@ public class AbilityHandHardwareCommunication
    {
       if (stateListener.flushAndGetLatest(stateMessage, handToPack.getHandSide()))
       {
-         handToPack.setFingerPositions(stateMessage.getFingerPositionsDegrees());
+         handToPack.setActuatorPositions(stateMessage.getActuatorPositions());
          receivedFirstState = true;
       }
    }
@@ -58,7 +58,8 @@ public class AbilityHandHardwareCommunication
    {
       commandMessage.setHandSide(handToPublish.getHandSide().toByte());
       commandMessage.setCommandType(handToPublish.getCommandType().toByte());
-      System.arraycopy(handToPublish.getCommandValues(), 0, commandMessage.getCommandValues(), 0, AbilityHandInterface.ACTUATOR_COUNT);
+      for (int i = 0; i < AbilityHandInterface.ACTUATOR_COUNT; ++i)
+         commandMessage.getCommandValues()[i] = handToPublish.getCommandValue(i);
 
       commandPublisher.publish(commandMessage);
    }
