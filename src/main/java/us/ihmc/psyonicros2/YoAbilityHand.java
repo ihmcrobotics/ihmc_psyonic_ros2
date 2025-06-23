@@ -8,11 +8,8 @@ import us.ihmc.yoVariables.variable.YoEnum;
 public class YoAbilityHand implements AbilityHandInterface
 {
    private final RobotSide handSide;
-
    private final YoEnum<AbilityHandCommandType> commandType;
-
    private final YoDouble[] commandValues = new YoDouble[ACTUATOR_COUNT];
-
    private final YoDouble[] actuatorPositions = new YoDouble[ACTUATOR_COUNT];
 
    public YoAbilityHand(YoRegistry registry, RobotSide handSide)
