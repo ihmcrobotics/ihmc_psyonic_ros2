@@ -5,6 +5,11 @@ import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoEnum;
 
+/**
+ * A basic YoVariable-ized implementation of the {@link AbilityHandInterface}.
+ * Can be useful in some applications, though it may be necessary to create
+ * a custom implementation for other applications.
+ */
 public class YoAbilityHand implements AbilityHandInterface
 {
    private final RobotSide handSide;
