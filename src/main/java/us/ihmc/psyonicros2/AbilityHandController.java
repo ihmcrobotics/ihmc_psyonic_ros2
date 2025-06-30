@@ -24,6 +24,10 @@ public class AbilityHandController implements AbilityHandInterface
       for (int i = 0; i < ACTUATOR_COUNT; i++)
       {
          commandValues[i] = 30.0f;
+         if(i==5)
+         {
+            commandValues[i] = -30.0f;
+         }
          actuatorPositions[i] = 30.0f;
          controlFinger[i] = 30.0f;
       }
@@ -125,8 +129,10 @@ public class AbilityHandController implements AbilityHandInterface
          if (reached|| System.currentTimeMillis() - startTime > 5000)
          {
             if (moveSkipped(excludedIndex))
+            {
                startTime = System.currentTimeMillis();
                controlMode = ControlMode.POSITION;
+            }
          }
       }
    }
