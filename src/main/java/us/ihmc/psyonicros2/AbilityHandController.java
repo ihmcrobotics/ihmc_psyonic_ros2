@@ -6,22 +6,20 @@ public class AbilityHandController implements AbilityHandInterface
 {
 
    private enum ControlMode
-   {IDLE, VEL_TO_POS}
+   {POSITION, VELOCITY}
 
-   private ControlMode controlMode = ControlMode.IDLE;
-   private float velToPosTarget = Float.NaN;
-   private float velToPosSpeed = 0.0f;
-   private final AbilityHandHardwareCommunication communication;
+   private ControlMode controlMode = ControlMode.POSITION;
+   private float goalPosition = Float.NaN;
+   private float goalVelocity = 0.0f;
    private final RobotSide handSide;
    private AbilityHandCommandType commandType = AbilityHandCommandType.POSITION;
    private final float[] commandValues = new float[ACTUATOR_COUNT];
    private final float[] actuatorPositions = new float[ACTUATOR_COUNT];
    private final float[] controlFinger = new float[ACTUATOR_COUNT];
 
-   public AbilityHandController(RobotSide handSide, AbilityHandHardwareCommunication communication)
+   public AbilityHandController(RobotSide handSide)
    {
       this.handSide = handSide;
-      this.communication = communication;
       for (int i = 0; i < ACTUATOR_COUNT; i++)
       {
          commandValues[i] = 30.0f;
@@ -32,6 +30,10 @@ public class AbilityHandController implements AbilityHandInterface
 
    public void setAllFingers(float position)
    {
+      if (controlMode == ControlMode.VELOCITY)
+      {
+         return;
+      }
       setCommandType(AbilityHandCommandType.POSITION);
       for (int i = 0; i < ACTUATOR_COUNT; i++)
       {
@@ -41,22 +43,14 @@ public class AbilityHandController implements AbilityHandInterface
             setCommandValue(i, position);
          }
       }
-      communication.publishCommand(this);
-   }
-
-   public void startVelToPos(float targetPosition, float velocity)
-   {
-      velToPosTarget = targetPosition;
-      velToPosSpeed = velocity;
-      controlMode = ControlMode.VEL_TO_POS;
    }
 
    public void processVelToPos(int excludedIndex)
    {
-      if (controlMode != ControlMode.VEL_TO_POS)
+      if (controlMode == ControlMode.POSITION)
          return;
 
-      if (velToPosSpeed < 0.0f)
+      if (goalVelocity < 0.0f)
       {
          if (moveSkipped(excludedIndex))
          {
@@ -65,7 +59,7 @@ public class AbilityHandController implements AbilityHandInterface
             {
                if (i != excludedIndex)
                {
-                  float v = (i == 5) ? -velToPosSpeed : velToPosSpeed;
+                  float v = (i == 5) ? -goalVelocity : goalVelocity;
                   setCommandValue(i, v);
                }
                else
@@ -73,7 +67,6 @@ public class AbilityHandController implements AbilityHandInterface
                   setCommandValue(i, 0.0f);
                }
             }
-            communication.publishCommand(this);
 
             boolean allOthersReached = true;
             for (int i = 0; i < ACTUATOR_COUNT; i++)
@@ -83,14 +76,14 @@ public class AbilityHandController implements AbilityHandInterface
                float pos = getActuatorPosition(i);
                if (i == 5)
                   pos = -pos;
-               if ((velToPosSpeed < 0 && pos > velToPosTarget) || (velToPosSpeed > 0 && pos < velToPosTarget))
+               if ((goalVelocity < 0 && pos > goalPosition) || (goalVelocity > 0 && pos < goalPosition))
                {
                   allOthersReached = false;
                   break;
                }
             }
             if (allOthersReached)
-               controlMode = ControlMode.IDLE;
+               controlMode = ControlMode.POSITION;
          }
       }
       else
@@ -100,7 +93,7 @@ public class AbilityHandController implements AbilityHandInterface
          {
             if (i != excludedIndex)
             {
-               float v = (i == 5) ? -velToPosSpeed : velToPosSpeed;
+               float v = (i == 5) ? -goalVelocity : goalVelocity;
                setCommandValue(i, v);
             }
             else
@@ -108,7 +101,6 @@ public class AbilityHandController implements AbilityHandInterface
                setCommandValue(i, 0.0f);
             }
          }
-         communication.publishCommand(this);
 
          boolean reached = true;
          for (int i = 0; i < ACTUATOR_COUNT; i++)
@@ -118,7 +110,7 @@ public class AbilityHandController implements AbilityHandInterface
             float pos = getActuatorPosition(i);
             if (i == 5)
                pos = -pos;
-            if ((velToPosSpeed > 0 && pos < velToPosTarget) || (velToPosSpeed < 0 && pos > velToPosTarget))
+            if ((goalVelocity > 0 && pos < goalPosition) || (goalVelocity < 0 && pos > goalPosition))
             {
                reached = false;
                break;
@@ -127,7 +119,7 @@ public class AbilityHandController implements AbilityHandInterface
          if (reached)
          {
             if (moveSkipped(excludedIndex))
-               controlMode = ControlMode.IDLE;
+               controlMode = ControlMode.POSITION;
          }
       }
    }
@@ -139,7 +131,7 @@ public class AbilityHandController implements AbilityHandInterface
       {
          if (i == index)
          {
-            float v = (i == 5) ? -velToPosSpeed : velToPosSpeed;
+            float v = (i == 5) ? -goalVelocity : goalVelocity;
             setCommandValue(i, v);
          }
          else
@@ -147,14 +139,13 @@ public class AbilityHandController implements AbilityHandInterface
             setCommandValue(i, 0);
          }
       }
-      communication.publishCommand(this);
       boolean reached = true;
       for (int i = 0; i < ACTUATOR_COUNT; i++)
       {
          if (i == index)
          {
             float pos = getActuatorPosition(i);
-            if ((velToPosSpeed > 0 && pos < velToPosTarget / 2) || (velToPosSpeed < 0 && pos > velToPosTarget))
+            if ((goalVelocity > 0 && pos < goalPosition / 2) || (goalVelocity < 0 && pos > goalPosition))
             {
                reached = false;
                break;
@@ -168,14 +159,11 @@ public class AbilityHandController implements AbilityHandInterface
       return false;
    }
 
-   public void publish()
-   {
-      communication.publishCommand(this);
-   }
-
-   public void update()
+   public void update(AbilityHandHardwareCommunication communication)
    {
       communication.readState(this);
+      processVelToPos(4);
+      communication.publishCommand(this);
    }
 
    public float getControlSliderValue(int index)
@@ -186,6 +174,43 @@ public class AbilityHandController implements AbilityHandInterface
    public void setControlSliderValue(int index, float v)
    {
       controlFinger[index] = v;
+   }
+
+   public void setControlMode(int controlInt)
+   {
+      if (controlInt == 0)
+      {
+         controlMode = ControlMode.POSITION;
+      }
+      else
+      {
+         controlMode = ControlMode.VELOCITY;
+      }
+   }
+
+   public ControlMode getControlMode()
+   {
+      return controlMode;
+   }
+
+   public void setGoalPosition(float position)
+   {
+      goalPosition = position;
+   }
+
+   public float getGoalPosition()
+   {
+      return goalPosition;
+   }
+
+   public void setGoalVelocity(float velocity)
+   {
+      goalVelocity = velocity;
+   }
+
+   public float getGoalVelocity()
+   {
+      return goalVelocity;
    }
 
    @Override
