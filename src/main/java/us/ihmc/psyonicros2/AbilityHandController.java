@@ -8,6 +8,7 @@ public class AbilityHandController implements AbilityHandInterface
    private enum ControlMode
    {POSITION, VELOCITY}
 
+   private long startTime = 0;
    private ControlMode controlMode = ControlMode.POSITION;
    private float goalPosition = Float.NaN;
    private float goalVelocity = 0.0f;
@@ -41,6 +42,11 @@ public class AbilityHandController implements AbilityHandInterface
          {
             controlFinger[i] = position;
             setCommandValue(i, position);
+         }
+         else
+         {
+            controlFinger[i] = actuatorPositions[i];
+            setCommandValue(i, actuatorPositions[i]);
          }
       }
    }
@@ -116,9 +122,10 @@ public class AbilityHandController implements AbilityHandInterface
                break;
             }
          }
-         if (reached)
+         if (reached|| System.currentTimeMillis() - startTime > 5000)
          {
             if (moveSkipped(excludedIndex))
+               startTime = System.currentTimeMillis();
                controlMode = ControlMode.POSITION;
          }
       }
@@ -206,6 +213,7 @@ public class AbilityHandController implements AbilityHandInterface
    public void setGoalVelocity(float velocity)
    {
       goalVelocity = velocity;
+      startTime = System.currentTimeMillis();
    }
 
    public float getGoalVelocity()
