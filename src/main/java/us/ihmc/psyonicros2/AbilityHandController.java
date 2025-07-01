@@ -93,7 +93,14 @@ public class AbilityHandController implements AbilityHandInterface
                }
             }
             if (allOthersReached)
+            {
                controlMode = ControlMode.POSITION;
+               for(int i = 0; i < ACTUATOR_COUNT; i++)
+               {
+                  setCommandValue(i, getActuatorPosition(i));
+               }
+               commandType = AbilityHandCommandType.POSITION;
+            }
          }
       }
       else
@@ -132,6 +139,11 @@ public class AbilityHandController implements AbilityHandInterface
             {
                startTime = System.currentTimeMillis();
                controlMode = ControlMode.POSITION;
+               for(int i = 0; i < ACTUATOR_COUNT; i++)
+               {
+                  setCommandValue(i, getActuatorPosition(i));
+               }
+               commandType = AbilityHandCommandType.POSITION;
             }
          }
       }
