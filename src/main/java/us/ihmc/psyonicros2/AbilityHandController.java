@@ -8,7 +8,7 @@ public class AbilityHandController
    {
       POSITION, VELOCITY, VEL_TO_POS, GRIP;
 
-      public static ControlMode[] values = values();
+      public static final ControlMode[] values = values();
 
       public static ControlMode fromByte(byte ordinal)
       {
@@ -23,13 +23,9 @@ public class AbilityHandController
 
    public enum Grip
    {
-      POWER_GRIP,
-      KEY_GRIP,
-      TRIPOD_GRIP,
-      RELAX_GRIP,
-      RUDE_GRIP;
+      POWER_GRIP, KEY_GRIP, TRIPOD_GRIP, RELAX_GRIP, RUDE_GRIP;
 
-      public static Grip[] values = values();
+      public static final Grip[] values = values();
 
       public static Grip fromByte(byte ordinal)
       {
@@ -50,25 +46,38 @@ public class AbilityHandController
    private final float[] goalPositions = new float[ACTUATOR_COUNT];
    private final float[] goalVelocities = new float[ACTUATOR_COUNT];
 
-   // Low level control
-   private AbilityHandCommandType commandType = AbilityHandCommandType.POSITION;
-   private final float[] commandValues = new float[ACTUATOR_COUNT];
-
    public AbilityHandController(AbilityHandInterface hand)
    {
       this.hand = hand;
-
-      for (int i = 0; i < ACTUATOR_COUNT; i++)
-      {
-         commandValues[i] = 30.0f;
-         if (i == 5)
-         {
-            commandValues[i] = -30.0f;
-         }
-      }
    }
 
    public void update()
+   {
+      switch (controlMode)
+      {
+         case POSITION -> updatePositionControl();
+         case VELOCITY -> updateVelocityControl();
+         case VEL_TO_POS -> updateVelToPosControl();
+         case GRIP -> updateGripControl();
+      }
+   }
+
+
+   private void updatePositionControl()
+   {
+
+   }
+
+   private void updateVelocityControl()
+   {
+
+   }
+
+   private void updateVelToPosControl()
+   {
+   }
+
+   private void updateGripControl()
    {
 
    }
