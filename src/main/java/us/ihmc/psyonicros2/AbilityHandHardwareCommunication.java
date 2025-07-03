@@ -7,12 +7,13 @@ import us.ihmc.ros2.ROS2Publisher;
 import us.ihmc.ros2.ROS2Subscription;
 import us.ihmc.ros2.RealtimeROS2Node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 /**
- * <p>Controller side ROS 2 communication for the {@link AbilityHandInterface}. Communicates with low-level hardware control process.</p>
+ * <p>High level ROS 2 communication for the {@link AbilityHandInterface}. Communicates with low-level hardware control process.</p>
  * <p>Subscribes to {@link AbilityHandState} messages and publishes {@link AbilityHandCommand} messages.</p>
  */
 public class AbilityHandHardwareCommunication
@@ -22,10 +23,10 @@ public class AbilityHandHardwareCommunication
    private final AbilityHandMessageListener<AbilityHandState> stateListener;
    private final ROS2Subscription<AbilityHandState> stateSubscription;
 
-   private final HashMap<String, AbilityHandCommand> commandMessages;
+   private final Map<String, AbilityHandCommand> commandMessages;
    private final ROS2Publisher<AbilityHandCommand> commandPublisher;
 
-   private final Set<String> registeredHandSerialNumbers;
+   private final List<String> registeredHandSerialNumbers;
 
    public AbilityHandHardwareCommunication(String nodeName)
    {
@@ -38,7 +39,7 @@ public class AbilityHandHardwareCommunication
       commandMessages = new HashMap<>();
       commandPublisher = node.createPublisher(AbilityHandROS2API.COMMAND_TOPIC);
 
-      registeredHandSerialNumbers = new HashSet<>();
+      registeredHandSerialNumbers = new ArrayList<>(2);
    }
 
    private void registerNewHand(StringBuilder newHandSerialNumber)
@@ -48,13 +49,19 @@ public class AbilityHandHardwareCommunication
       commandMessages.put(serialNumber, new AbilityHandCommand());
    }
 
-   public Set<String> getAvailableHandSerialNumbers()
+   /**
+    * <p>Get the serial numbers of the available hands.</p>
+    * <p>Treat the list as read-only.</p>
+    *
+    * @return List of serial numbers of the available hands.
+    */
+   public List<String> getAvailableHandSerialNumbers()
    {
       return registeredHandSerialNumbers;
    }
 
    /**
-    * Read the latest state message.
+    * Read the latest state message of the specified hand.
     *
     * @param messageToPack Message to pack with the latest state.
     */
@@ -63,6 +70,12 @@ public class AbilityHandHardwareCommunication
       return stateListener.readLatestMessage(serialNumber, messageToPack);
    }
 
+   /**
+    * Read the latest state message of the specified hand.
+    *
+    * @param serialNumber Serial number specifying the hand.
+    * @return A copy of the latest state message.
+    */
    public AbilityHandState readState(String serialNumber)
    {
       AbilityHandState stateMessage = new AbilityHandState();
@@ -72,13 +85,24 @@ public class AbilityHandHardwareCommunication
       return null;
    }
 
+   /**
+    * <p>Get the command message for the specified hand.</p>.
+    * <p>Use this method to set the desired command values.
+    * Then publish the command using {@link #publishCommand(String)}</p>
+    *
+    * @param handSerialNumber Serial number specifying the hand.
+    * @return A reference to the command message for the specified hand.
+    */
    public AbilityHandCommand getCommand(String handSerialNumber)
    {
       return commandMessages.get(handSerialNumber);
    }
 
    /**
-    * Publish the command.
+    * Publish the command for the specified hand.
+    *
+    * @param handSerialNumber Serial number specifying the hand.
+    * @return {@code true} if the message was published. {@code false} if the hand specified wasn't found.
     */
    public boolean publishCommand(String handSerialNumber)
    {
