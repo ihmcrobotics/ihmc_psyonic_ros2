@@ -1,3 +1,6 @@
+# The hand's serial number. E.g. 24ABH265
+string<=8 serial_number
+
 byte LEFT=0
 byte RIGHT=1
 

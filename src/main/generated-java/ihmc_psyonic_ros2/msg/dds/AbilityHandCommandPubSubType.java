@@ -15,7 +15,7 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    @Override
    public final java.lang.String getDefinitionChecksum()
    {
-   		return "4a6f7769f1a92de2743b25d18d03b92f2f0dee01acbc3ed43a35c055293a71a1";
+   		return "221b1f8f8904d1d877c8921aa28d864f6755d2afac2d49ba6deebc305b25fcad";
    }
    
    @Override
@@ -52,9 +52,12 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    {
       int initial_alignment = current_alignment;
 
+      current_alignment += 4 + us.ihmc.idl.CDR.alignment(current_alignment, 4) + 8 + 1;
       current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
 
       current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
+
+      current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
 
       current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
 
@@ -71,6 +74,8 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    {
       int initial_alignment = current_alignment;
 
+      current_alignment += 4 + us.ihmc.idl.CDR.alignment(current_alignment, 4) + data.getSerialNumber().length() + 1;
+
       current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
 
 
@@ -78,32 +83,49 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
 
 
       current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
+      current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
 
       return current_alignment - initial_alignment;
    }
 
    public static void write(ihmc_psyonic_ros2.msg.dds.AbilityHandCommand data, us.ihmc.idl.CDR cdr)
    {
-      cdr.write_type_9(data.getHandSide());
+      if(data.getSerialNumber().length() <= 8)
+      cdr.write_type_d(data.getSerialNumber());else
+          throw new RuntimeException("serial_number field exceeds the maximum length: %d > %d".formatted(data.getSerialNumber().length(), 8));
 
-      cdr.write_type_9(data.getCommandType());
+      cdr.write_type_9(data.getControlMode());
 
-      for(int i0 = 0; i0 < data.getCommandValues().length; ++i0)
+      cdr.write_type_9(data.getGrip());
+
+      for(int i0 = 0; i0 < data.getGoalPositions().length; ++i0)
       {
-        	cdr.write_type_5(data.getCommandValues()[i0]);	
+        	cdr.write_type_5(data.getGoalPositions()[i0]);	
+      }
+
+      for(int i0 = 0; i0 < data.getGoalVelocities().length; ++i0)
+      {
+        	cdr.write_type_5(data.getGoalVelocities()[i0]);	
       }
 
    }
 
    public static void read(ihmc_psyonic_ros2.msg.dds.AbilityHandCommand data, us.ihmc.idl.CDR cdr)
    {
-      data.setHandSide(cdr.read_type_9());
+      cdr.read_type_d(data.getSerialNumber());	
+      data.setControlMode(cdr.read_type_9());
       	
-      data.setCommandType(cdr.read_type_9());
+      data.setGrip(cdr.read_type_9());
       	
-      for(int i0 = 0; i0 < data.getCommandValues().length; ++i0)
+      for(int i0 = 0; i0 < data.getGoalPositions().length; ++i0)
       {
-        	data.getCommandValues()[i0] = cdr.read_type_5();
+        	data.getGoalPositions()[i0] = cdr.read_type_5();
+        	
+      }
+      	
+      for(int i0 = 0; i0 < data.getGoalVelocities().length; ++i0)
+      {
+        	data.getGoalVelocities()[i0] = cdr.read_type_5();
         	
       }
       	
@@ -113,17 +135,21 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    @Override
    public final void serialize(ihmc_psyonic_ros2.msg.dds.AbilityHandCommand data, us.ihmc.idl.InterchangeSerializer ser)
    {
-      ser.write_type_9("hand_side", data.getHandSide());
-      ser.write_type_9("command_type", data.getCommandType());
-      ser.write_type_f("command_values", data.getCommandValues());
+      ser.write_type_d("serial_number", data.getSerialNumber());
+      ser.write_type_9("control_mode", data.getControlMode());
+      ser.write_type_9("grip", data.getGrip());
+      ser.write_type_f("goal_positions", data.getGoalPositions());
+      ser.write_type_f("goal_velocities", data.getGoalVelocities());
    }
 
    @Override
    public final void deserialize(us.ihmc.idl.InterchangeSerializer ser, ihmc_psyonic_ros2.msg.dds.AbilityHandCommand data)
    {
-      data.setHandSide(ser.read_type_9("hand_side"));
-      data.setCommandType(ser.read_type_9("command_type"));
-      ser.read_type_f("command_values", data.getCommandValues());
+      ser.read_type_d("serial_number", data.getSerialNumber());
+      data.setControlMode(ser.read_type_9("control_mode"));
+      data.setGrip(ser.read_type_9("grip"));
+      ser.read_type_f("goal_positions", data.getGoalPositions());
+      ser.read_type_f("goal_velocities", data.getGoalVelocities());
    }
 
    public static void staticCopy(ihmc_psyonic_ros2.msg.dds.AbilityHandCommand src, ihmc_psyonic_ros2.msg.dds.AbilityHandCommand dest)

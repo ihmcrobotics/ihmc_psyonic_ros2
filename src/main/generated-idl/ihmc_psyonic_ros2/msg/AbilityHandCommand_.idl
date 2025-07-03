@@ -7,26 +7,49 @@ module ihmc_psyonic_ros2
   {
     module dds
     {
-      const octet LEFT =
+      const octet POSITION_CONTROL =
       0;
 
-      const octet RIGHT =
+      const octet VELOCITY_CONTROL =
       1;
+
+      const octet VEL_TO_POS_CONTROL =
+      2;
+
+      const octet GRIP_CONTROL =
+      3;
+
+      const octet POWER_GRIP =
+      0;
+
+      const octet KEY_GRIP =
+      1;
+
+      const octet TRIPOD_GRIP =
+      2;
+
+      const octet RELAX_GRIP =
+      3;
+
+      const octet RUDE_GRIP =
+      4;
 
 
       @TypeCode(type="ihmc_psyonic_ros2::msg::dds_::AbilityHandCommand_")
       struct AbilityHandCommand
       {
         /**
-         * Specifies the side of the robot of the hand being referred to
+         * The hand's serial number. E.g. 24ABH265
          */
-        @defaultValue(value=255)
-        octet hand_side;
+        string<8> serial_number;
         /**
-         * Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+         * Specifies the control mode
+         * Default = position control
          */
-        octet command_type;
-        float command_values[6];
+        octet control_mode;
+        octet grip;
+        float goal_positions[6];
+        float goal_velocities[6];
       };
     };
   };

@@ -11,6 +11,10 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
    public static final byte LEFT = (byte) 0;
    public static final byte RIGHT = (byte) 1;
    /**
+            * The hand's serial number. E.g. 24ABH265
+            */
+   public java.lang.StringBuilder serial_number_;
+   /**
             * Specifies the side of the robot of the hand being referred to
             */
    public byte hand_side_ = (byte) 255;
@@ -21,6 +25,7 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
 
    public AbilityHandState()
    {
+      serial_number_ = new java.lang.StringBuilder(8);
       actuator_positions_ = new float[6];
 
    }
@@ -33,6 +38,9 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
 
    public void set(AbilityHandState other)
    {
+      serial_number_.setLength(0);
+      serial_number_.append(other.serial_number_);
+
       hand_side_ = other.hand_side_;
 
       for(int i1 = 0; i1 < actuator_positions_.length; ++i1)
@@ -41,6 +49,30 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
 
       }
 
+   }
+
+   /**
+            * The hand's serial number. E.g. 24ABH265
+            */
+   public void setSerialNumber(java.lang.String serial_number)
+   {
+      serial_number_.setLength(0);
+      serial_number_.append(serial_number);
+   }
+
+   /**
+            * The hand's serial number. E.g. 24ABH265
+            */
+   public java.lang.String getSerialNumberAsString()
+   {
+      return getSerialNumber().toString();
+   }
+   /**
+            * The hand's serial number. E.g. 24ABH265
+            */
+   public java.lang.StringBuilder getSerialNumber()
+   {
+      return serial_number_;
    }
 
    /**
@@ -85,6 +117,8 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
       if(other == null) return false;
       if(other == this) return true;
 
+      if (!us.ihmc.idl.IDLTools.epsilonEqualsStringBuilder(this.serial_number_, other.serial_number_, epsilon)) return false;
+
       if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.hand_side_, other.hand_side_, epsilon)) return false;
 
       for(int i3 = 0; i3 < actuator_positions_.length; ++i3)
@@ -105,6 +139,8 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
 
       AbilityHandState otherMyClass = (AbilityHandState) other;
 
+      if (!us.ihmc.idl.IDLTools.equals(this.serial_number_, otherMyClass.serial_number_)) return false;
+
       if(this.hand_side_ != otherMyClass.hand_side_) return false;
 
       for(int i5 = 0; i5 < actuator_positions_.length; ++i5)
@@ -122,6 +158,8 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
       StringBuilder builder = new StringBuilder();
 
       builder.append("AbilityHandState {");
+      builder.append("serial_number=");
+      builder.append(this.serial_number_);      builder.append(", ");
       builder.append("hand_side=");
       builder.append(this.hand_side_);      builder.append(", ");
       builder.append("actuator_positions=");

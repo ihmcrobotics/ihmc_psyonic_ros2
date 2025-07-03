@@ -2,6 +2,7 @@ package us.ihmc.psyonicros2;
 
 import ihmc_psyonic_ros2.msg.dds.AbilityHandCommand;
 import ihmc_psyonic_ros2.msg.dds.AbilityHandState;
+import us.ihmc.psyonicros2.AbilityHandController.ControlMode;
 import us.ihmc.ros2.ROS2NodeBuilder;
 import us.ihmc.ros2.ROS2Publisher;
 import us.ihmc.ros2.ROS2Subscription;
@@ -37,27 +38,29 @@ public class AbilityHandControllerCommunication
    /**
     * Read the latest command into the hand object.
     *
-    * @param handToPack Hand object to pack with the latest command.
+    * @param controllerToUpdate Hand controller to update using the latest command.
     */
-   public void readCommand(AbilityHandInterface handToPack)
+   public void readCommand(AbilityHandController controllerToUpdate)
    {
-      if (commandListener.flushAndGetLatest(commandMessage, handToPack.getHandSide()))
+      if (commandListener.readLatestMessage(controllerToUpdate.getHand().getSerialNumber(), commandMessage))
       {
-         handToPack.setCommandType(AbilityHandCommandType.fromByte(commandMessage.getCommandType()));
-         handToPack.setCommandValues(commandMessage.getCommandValues());
+         controllerToUpdate.setControlMode(ControlMode.fromByte(commandMessage.getControlMode()));
+         controllerToUpdate.setGrip(commandMessage.getGrip());
+         controllerToUpdate.setGoalPositions(commandMessage.getGoalPositions());
+         controllerToUpdate.setGoalVelocities(commandMessage.getGoalVelocities());
       }
    }
 
    /**
     * Publish the hand's state.
     *
-    * @param handToPublish The hand to publish.
+    * @param handControllerToPublish The controller of the hand to publish.
     */
-   public void publishState(AbilityHandInterface handToPublish)
+   public void publishState(AbilityHandController handControllerToPublish)
    {
-      stateMessage.setHandSide(handToPublish.getHandSide().toByte());
+      stateMessage.setHandSide(handControllerToPublish.getHand().getHandSide().toByte());
       for (int i = 0; i < AbilityHandInterface.ACTUATOR_COUNT; ++i)
-         stateMessage.getActuatorPositions()[i] = handToPublish.getActuatorPosition(i);
+         stateMessage.getActuatorPositions()[i] = handControllerToPublish.getHand().getActuatorPosition(i);
 
       statePublisher.publish(stateMessage);
    }

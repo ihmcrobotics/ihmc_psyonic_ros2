@@ -12,13 +12,15 @@ import us.ihmc.yoVariables.variable.YoEnum;
  */
 public class YoAbilityHand implements AbilityHandInterface
 {
+   private final String serialNumber;
    private final RobotSide handSide;
    private final YoEnum<AbilityHandCommandType> commandType;
    private final YoDouble[] commandValues = new YoDouble[ACTUATOR_COUNT];
    private final YoDouble[] actuatorPositions = new YoDouble[ACTUATOR_COUNT];
 
-   public YoAbilityHand(YoRegistry registry, RobotSide handSide)
+   public YoAbilityHand(YoRegistry registry, String serialNumber, RobotSide handSide)
    {
+      this.serialNumber = serialNumber;
       this.handSide = handSide;
 
       String prefix = handSide.name() + "AbilityHand";
@@ -33,6 +35,12 @@ public class YoAbilityHand implements AbilityHandInterface
          actuatorPositions[i] = new YoDouble(prefix + "ActuatorPosition" + i, registry);
          actuatorPositions[i].set(0.0);
       }
+   }
+
+   @Override
+   public String getSerialNumber()
+   {
+      return serialNumber;
    }
 
    @Override

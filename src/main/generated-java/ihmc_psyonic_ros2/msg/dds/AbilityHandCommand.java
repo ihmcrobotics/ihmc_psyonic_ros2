@@ -8,21 +8,34 @@ import us.ihmc.pubsub.TopicDataType;
 
 public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Settable<AbilityHandCommand>, EpsilonComparable<AbilityHandCommand>
 {
-   public static final byte LEFT = (byte) 0;
-   public static final byte RIGHT = (byte) 1;
+   public static final byte POSITION_CONTROL = (byte) 0;
+   public static final byte VELOCITY_CONTROL = (byte) 1;
+   public static final byte VEL_TO_POS_CONTROL = (byte) 2;
+   public static final byte GRIP_CONTROL = (byte) 3;
+   public static final byte POWER_GRIP = (byte) 0;
+   public static final byte KEY_GRIP = (byte) 1;
+   public static final byte TRIPOD_GRIP = (byte) 2;
+   public static final byte RELAX_GRIP = (byte) 3;
+   public static final byte RUDE_GRIP = (byte) 4;
    /**
-            * Specifies the side of the robot of the hand being referred to
+            * The hand's serial number. E.g. 24ABH265
             */
-   public byte hand_side_ = (byte) 255;
+   public java.lang.StringBuilder serial_number_;
    /**
-            * Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+            * Specifies the control mode
+            * Default = position control
             */
-   public byte command_type_;
-   public float[] command_values_;
+   public byte control_mode_;
+   public byte grip_;
+   public float[] goal_positions_;
+   public float[] goal_velocities_;
 
    public AbilityHandCommand()
    {
-      command_values_ = new float[6];
+      serial_number_ = new java.lang.StringBuilder(8);
+      goal_positions_ = new float[6];
+
+      goal_velocities_ = new float[6];
 
    }
 
@@ -34,52 +47,87 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
 
    public void set(AbilityHandCommand other)
    {
-      hand_side_ = other.hand_side_;
+      serial_number_.setLength(0);
+      serial_number_.append(other.serial_number_);
 
-      command_type_ = other.command_type_;
+      control_mode_ = other.control_mode_;
 
-      for(int i1 = 0; i1 < command_values_.length; ++i1)
+      grip_ = other.grip_;
+
+      for(int i1 = 0; i1 < goal_positions_.length; ++i1)
       {
-            command_values_[i1] = other.command_values_[i1];
+            goal_positions_[i1] = other.goal_positions_[i1];
+
+      }
+
+      for(int i3 = 0; i3 < goal_velocities_.length; ++i3)
+      {
+            goal_velocities_[i3] = other.goal_velocities_[i3];
 
       }
 
    }
 
    /**
-            * Specifies the side of the robot of the hand being referred to
+            * The hand's serial number. E.g. 24ABH265
             */
-   public void setHandSide(byte hand_side)
+   public void setSerialNumber(java.lang.String serial_number)
    {
-      hand_side_ = hand_side;
-   }
-   /**
-            * Specifies the side of the robot of the hand being referred to
-            */
-   public byte getHandSide()
-   {
-      return hand_side_;
+      serial_number_.setLength(0);
+      serial_number_.append(serial_number);
    }
 
    /**
-            * Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+            * The hand's serial number. E.g. 24ABH265
             */
-   public void setCommandType(byte command_type)
+   public java.lang.String getSerialNumberAsString()
    {
-      command_type_ = command_type;
+      return getSerialNumber().toString();
    }
    /**
-            * Specifies the command type (one of POSITION, VELOCITY, CURRENT, DUTY)
+            * The hand's serial number. E.g. 24ABH265
             */
-   public byte getCommandType()
+   public java.lang.StringBuilder getSerialNumber()
    {
-      return command_type_;
+      return serial_number_;
+   }
+
+   /**
+            * Specifies the control mode
+            * Default = position control
+            */
+   public void setControlMode(byte control_mode)
+   {
+      control_mode_ = control_mode;
+   }
+   /**
+            * Specifies the control mode
+            * Default = position control
+            */
+   public byte getControlMode()
+   {
+      return control_mode_;
+   }
+
+   public void setGrip(byte grip)
+   {
+      grip_ = grip;
+   }
+   public byte getGrip()
+   {
+      return grip_;
    }
 
 
-   public float[] getCommandValues()
+   public float[] getGoalPositions()
    {
-      return command_values_;
+      return goal_positions_;
+   }
+
+
+   public float[] getGoalVelocities()
+   {
+      return goal_velocities_;
    }
 
 
@@ -100,13 +148,20 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
       if(other == null) return false;
       if(other == this) return true;
 
-      if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.hand_side_, other.hand_side_, epsilon)) return false;
+      if (!us.ihmc.idl.IDLTools.epsilonEqualsStringBuilder(this.serial_number_, other.serial_number_, epsilon)) return false;
 
-      if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.command_type_, other.command_type_, epsilon)) return false;
+      if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.control_mode_, other.control_mode_, epsilon)) return false;
 
-      for(int i3 = 0; i3 < command_values_.length; ++i3)
+      if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.grip_, other.grip_, epsilon)) return false;
+
+      for(int i5 = 0; i5 < goal_positions_.length; ++i5)
       {
-                if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.command_values_[i3], other.command_values_[i3], epsilon)) return false;
+                if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.goal_positions_[i5], other.goal_positions_[i5], epsilon)) return false;
+      }
+
+      for(int i7 = 0; i7 < goal_velocities_.length; ++i7)
+      {
+                if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.goal_velocities_[i7], other.goal_velocities_[i7], epsilon)) return false;
       }
 
 
@@ -122,13 +177,20 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
 
       AbilityHandCommand otherMyClass = (AbilityHandCommand) other;
 
-      if(this.hand_side_ != otherMyClass.hand_side_) return false;
+      if (!us.ihmc.idl.IDLTools.equals(this.serial_number_, otherMyClass.serial_number_)) return false;
 
-      if(this.command_type_ != otherMyClass.command_type_) return false;
+      if(this.control_mode_ != otherMyClass.control_mode_) return false;
 
-      for(int i5 = 0; i5 < command_values_.length; ++i5)
+      if(this.grip_ != otherMyClass.grip_) return false;
+
+      for(int i9 = 0; i9 < goal_positions_.length; ++i9)
       {
-                if(this.command_values_[i5] != otherMyClass.command_values_[i5]) return false;
+                if(this.goal_positions_[i9] != otherMyClass.goal_positions_[i9]) return false;
+
+      }
+      for(int i11 = 0; i11 < goal_velocities_.length; ++i11)
+      {
+                if(this.goal_velocities_[i11] != otherMyClass.goal_velocities_[i11]) return false;
 
       }
 
@@ -141,12 +203,16 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
       StringBuilder builder = new StringBuilder();
 
       builder.append("AbilityHandCommand {");
-      builder.append("hand_side=");
-      builder.append(this.hand_side_);      builder.append(", ");
-      builder.append("command_type=");
-      builder.append(this.command_type_);      builder.append(", ");
-      builder.append("command_values=");
-      builder.append(java.util.Arrays.toString(this.command_values_));
+      builder.append("serial_number=");
+      builder.append(this.serial_number_);      builder.append(", ");
+      builder.append("control_mode=");
+      builder.append(this.control_mode_);      builder.append(", ");
+      builder.append("grip=");
+      builder.append(this.grip_);      builder.append(", ");
+      builder.append("goal_positions=");
+      builder.append(java.util.Arrays.toString(this.goal_positions_));      builder.append(", ");
+      builder.append("goal_velocities=");
+      builder.append(java.util.Arrays.toString(this.goal_velocities_));
       builder.append("}");
       return builder.toString();
    }

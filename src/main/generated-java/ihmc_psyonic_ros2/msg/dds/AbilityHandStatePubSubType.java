@@ -15,7 +15,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    @Override
    public final java.lang.String getDefinitionChecksum()
    {
-   		return "89122bf0f447ebfd49ba92892e1e205608bdb0038617069335ebfdd42ed4a6d8";
+   		return "830d7c605596ec4fb4e5ce7b667e6ec743af3a68681cdd902c4fb385180b7794";
    }
    
    @Override
@@ -52,6 +52,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    {
       int initial_alignment = current_alignment;
 
+      current_alignment += 4 + us.ihmc.idl.CDR.alignment(current_alignment, 4) + 8 + 1;
       current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
 
       current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
@@ -69,6 +70,8 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    {
       int initial_alignment = current_alignment;
 
+      current_alignment += 4 + us.ihmc.idl.CDR.alignment(current_alignment, 4) + data.getSerialNumber().length() + 1;
+
       current_alignment += 1 + us.ihmc.idl.CDR.alignment(current_alignment, 1);
 
 
@@ -79,6 +82,10 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
 
    public static void write(ihmc_psyonic_ros2.msg.dds.AbilityHandState data, us.ihmc.idl.CDR cdr)
    {
+      if(data.getSerialNumber().length() <= 8)
+      cdr.write_type_d(data.getSerialNumber());else
+          throw new RuntimeException("serial_number field exceeds the maximum length: %d > %d".formatted(data.getSerialNumber().length(), 8));
+
       cdr.write_type_9(data.getHandSide());
 
       for(int i0 = 0; i0 < data.getActuatorPositions().length; ++i0)
@@ -90,6 +97,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
 
    public static void read(ihmc_psyonic_ros2.msg.dds.AbilityHandState data, us.ihmc.idl.CDR cdr)
    {
+      cdr.read_type_d(data.getSerialNumber());	
       data.setHandSide(cdr.read_type_9());
       	
       for(int i0 = 0; i0 < data.getActuatorPositions().length; ++i0)
@@ -104,6 +112,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    @Override
    public final void serialize(ihmc_psyonic_ros2.msg.dds.AbilityHandState data, us.ihmc.idl.InterchangeSerializer ser)
    {
+      ser.write_type_d("serial_number", data.getSerialNumber());
       ser.write_type_9("hand_side", data.getHandSide());
       ser.write_type_f("actuator_positions", data.getActuatorPositions());
    }
@@ -111,6 +120,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    @Override
    public final void deserialize(us.ihmc.idl.InterchangeSerializer ser, ihmc_psyonic_ros2.msg.dds.AbilityHandState data)
    {
+      ser.read_type_d("serial_number", data.getSerialNumber());
       data.setHandSide(ser.read_type_9("hand_side"));
       ser.read_type_f("actuator_positions", data.getActuatorPositions());
    }

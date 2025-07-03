@@ -18,6 +18,10 @@ module ihmc_psyonic_ros2
       struct AbilityHandState
       {
         /**
+         * The hand's serial number. E.g. 24ABH265
+         */
+        string<8> serial_number;
+        /**
          * Specifies the side of the robot of the hand being referred to
          */
         @defaultValue(value=255)
