@@ -58,6 +58,7 @@ public class AbilityHandControllerCommunication
     */
    public void publishState(AbilityHandController handControllerToPublish)
    {
+      stateMessage.setSerialNumber(handControllerToPublish.getHand().getSerialNumber());
       stateMessage.setHandSide(handControllerToPublish.getHand().getHandSide().toByte());
       for (int i = 0; i < AbilityHandInterface.ACTUATOR_COUNT; ++i)
          stateMessage.getActuatorPositions()[i] = handControllerToPublish.getHand().getActuatorPosition(i);

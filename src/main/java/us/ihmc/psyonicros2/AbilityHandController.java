@@ -38,6 +38,8 @@ public class AbilityHandController
       }
    }
 
+   private static final float TOLERANCE = 2.5f;
+
    private final AbilityHandInterface hand;
 
    // High level control
@@ -62,19 +64,38 @@ public class AbilityHandController
       }
    }
 
-
    private void updatePositionControl()
    {
-
+      hand.setCommandType(AbilityHandCommandType.POSITION);
+      hand.setCommandValues(goalPositions);
    }
 
    private void updateVelocityControl()
    {
-
+      hand.setCommandType(AbilityHandCommandType.VELOCITY);
+      hand.setCommandValues(goalVelocities);
    }
 
    private void updateVelToPosControl()
    {
+      for (int i = 0; i < ACTUATOR_COUNT; i++)
+      {
+         float currentPos = hand.getActuatorPosition(i);
+
+         float velocity;
+         if (Math.abs(currentPos - goalPositions[i]) < TOLERANCE)
+         {
+            velocity = 0;
+         }
+         else
+         {
+            float goalVelocity = Math.abs(goalVelocities[i]);
+            velocity = (currentPos < goalPositions[i]) ? goalVelocity : -goalVelocity;
+         }
+
+         hand.setCommandType(AbilityHandCommandType.VELOCITY);
+         hand.setCommandValue(i, velocity);
+      }
    }
 
    private void updateGripControl()
