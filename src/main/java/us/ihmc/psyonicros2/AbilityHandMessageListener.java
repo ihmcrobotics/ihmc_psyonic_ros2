@@ -7,6 +7,9 @@ import us.ihmc.communication.packets.Packet;
 import us.ihmc.pubsub.subscriber.Subscriber;
 import us.ihmc.ros2.NewMessageListener;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class AbilityHandMessageListener<T extends Packet<T>> implements NewMessageListener<T>
@@ -14,6 +17,7 @@ public class AbilityHandMessageListener<T extends Packet<T>> implements NewMessa
    private final Supplier<T> newMessageSupplier;
    private final T message;
    private final PairList<StringBuilder, T> handMessageList = new PairList<>();
+   private final List<Consumer<StringBuilder>> onNewHandRegisteredConsumers = new ArrayList<>();
 
    public AbilityHandMessageListener(Supplier<T> newMessageSupplier)
    {
@@ -27,7 +31,6 @@ public class AbilityHandMessageListener<T extends Packet<T>> implements NewMessa
       subscriber.takeNextData(message, null);
 
       StringBuilder serialNumber;
-
       if (message instanceof AbilityHandCommand commandMessage)
       {
          serialNumber = commandMessage.getSerialNumber();
@@ -54,6 +57,10 @@ public class AbilityHandMessageListener<T extends Packet<T>> implements NewMessa
       T messageCopy = newMessageSupplier.get();
       messageCopy.set(message);
       handMessageList.add(serialNumberCopy, messageCopy);
+      for (int i = 0; i < onNewHandRegisteredConsumers.size(); ++i)
+      {
+         onNewHandRegisteredConsumers.get(i).accept(serialNumberCopy);
+      }
    }
 
    public boolean readLatestMessage(String serialNumber, T messageToPack)
@@ -68,5 +75,10 @@ public class AbilityHandMessageListener<T extends Packet<T>> implements NewMessa
       }
 
       return false;
+   }
+
+   public void onNewHandRegistered(Consumer<StringBuilder> serialNumberConsumer)
+   {
+      onNewHandRegisteredConsumers.add(serialNumberConsumer);
    }
 }
