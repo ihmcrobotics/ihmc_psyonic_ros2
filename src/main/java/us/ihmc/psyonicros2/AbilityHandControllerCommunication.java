@@ -3,6 +3,7 @@ package us.ihmc.psyonicros2;
 import ihmc_psyonic_ros2.msg.dds.AbilityHandCommand;
 import ihmc_psyonic_ros2.msg.dds.AbilityHandState;
 import us.ihmc.psyonicros2.AbilityHandController.ControlMode;
+import us.ihmc.psyonicros2.AbilityHandController.Grip;
 import us.ihmc.ros2.ROS2NodeBuilder;
 import us.ihmc.ros2.ROS2Publisher;
 import us.ihmc.ros2.ROS2Subscription;
@@ -45,7 +46,7 @@ public class AbilityHandControllerCommunication
       if (commandListener.readLatestMessage(controllerToUpdate.getHand().getSerialNumber(), commandMessage))
       {
          controllerToUpdate.setControlMode(ControlMode.fromByte(commandMessage.getControlMode()));
-         controllerToUpdate.setGrip(commandMessage.getGrip());
+         controllerToUpdate.setGrip(Grip.fromByte(commandMessage.getGrip()));
          controllerToUpdate.setGoalPositions(commandMessage.getGoalPositions());
          controllerToUpdate.setGoalVelocities(commandMessage.getGoalVelocities());
       }

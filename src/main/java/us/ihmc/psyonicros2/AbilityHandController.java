@@ -44,7 +44,7 @@ public class AbilityHandController
 
    // High level control
    private ControlMode controlMode = ControlMode.POSITION;
-   private byte grip = 0;
+   private Grip grip;
    private final float[] goalPositions = new float[ACTUATOR_COUNT];
    private final float[] goalVelocities = new float[ACTUATOR_COUNT];
 
@@ -113,18 +113,30 @@ public class AbilityHandController
       this.controlMode = controlMode;
    }
 
-   public void setGrip(byte grip)
+   public void setGrip(Grip grip)
    {
       this.grip = grip;
    }
 
+   public void setGoalPosition(int index, float goalPosition)
+   {
+      goalPositions[index] = goalPosition;
+   }
+
    public void setGoalPositions(float[] goalPositions)
    {
-      System.arraycopy(goalPositions, 0, this.goalPositions, 0, ACTUATOR_COUNT);
+      for (int i = 0; i < ACTUATOR_COUNT; ++i)
+         setGoalPosition(i, goalPositions[i]);
+   }
+
+   public void setGoalVelocity(int index, float goalVelocity)
+   {
+      goalVelocities[index] = goalVelocity;
    }
 
    public void setGoalVelocities(float[] goalVelocities)
    {
-      System.arraycopy(goalVelocities, 0, this.goalVelocities, 0, ACTUATOR_COUNT);
+      for (int i = 0; i < ACTUATOR_COUNT; ++i)
+         setGoalVelocity(i, goalVelocities[i]);
    }
 }
