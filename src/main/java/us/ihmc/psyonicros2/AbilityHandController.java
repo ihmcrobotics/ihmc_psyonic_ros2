@@ -38,19 +38,21 @@ public class AbilityHandController
       }
    }
 
-   private static final float TOLERANCE = 2.5f;
+   private static final float TOLERANCE = 7.5f;
 
    private final AbilityHandInterface hand;
 
    // High level control
    private ControlMode controlMode = ControlMode.POSITION;
    private Grip grip;
-   private final float[] goalPositions = new float[ACTUATOR_COUNT];
-   private final float[] goalVelocities = new float[ACTUATOR_COUNT];
+   private final float[] goalPositions;
+   private final float[] goalVelocities;
 
    public AbilityHandController(AbilityHandInterface hand)
    {
       this.hand = hand;
+      goalPositions = new float[]{30.0f, 30.0f, 30.0f, 30.0f, 30.0f, -30.0f};
+      goalVelocities = new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
    }
 
    public void update()
