@@ -38,12 +38,29 @@ public class AbilityHandController
       }
    }
 
+   private static final int[][][] GRIP_FINGER_STAGES = {
+         {{0, 1, 2, 3},
+          {5},
+          {4}},
+         {{0}, {1, 2, 3, 4}, {5}},
+         {{0, 1, 2}, {3, 4, 5}},
+         {{4}, {0, 1, 2, 3, 5}},
+         {{0, 1, 2, 3, 4}, {5}}};
+
+   private static final float[][][] GRIP_STAGE_POSITIONS = {
+         {{90, 90, 90, 90}, {-50}, {50}},
+         {{50}, {70, 70, 70, 70}, {-30}},
+         {{60, 60, 60}, {90, 90, -90}},
+         {{30}, {30, 30, 30, 30, -30}},
+         {{100, 30, 100, 100, 20}, {-30}}};
+
    private static final float TOLERANCE = 7.5f;
 
    private final AbilityHandInterface hand;
 
    // High level control
    private ControlMode controlMode = ControlMode.POSITION;
+   private int gripStage = 0;
    private Grip grip;
    private final float[] goalPositions;
    private final float[] goalVelocities;
@@ -51,8 +68,8 @@ public class AbilityHandController
    public AbilityHandController(AbilityHandInterface hand)
    {
       this.hand = hand;
-      goalPositions = new float[]{30.0f, 30.0f, 30.0f, 30.0f, 30.0f, -30.0f};
-      goalVelocities = new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+      goalPositions = new float[] {30.0f, 30.0f, 30.0f, 30.0f, 30.0f, -30.0f};
+      goalVelocities = new float[] {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
    }
 
    public void update()
@@ -102,7 +119,49 @@ public class AbilityHandController
 
    private void updateGripControl()
    {
+      int gripIdx = grip.ordinal();
+      int[][] stages = GRIP_FINGER_STAGES[gripIdx];
+      float[][] positions = GRIP_STAGE_POSITIONS[gripIdx];
 
+      // if we’re past the last stage, go back to position mode
+      if (gripStage >= stages.length)
+      {
+         controlMode = ControlMode.POSITION;
+         gripStage = 0;
+         return;
+      }
+      int[] fingersThisStage = stages[gripStage];
+      float[] targetsThisStage = positions[gripStage];
+
+      hand.setCommandType(AbilityHandCommandType.VELOCITY);
+
+      boolean stageComplete = true;
+
+      for (int idx = 0; idx < fingersThisStage.length; idx++)
+      {
+         int i = fingersThisStage[idx];
+         float target = targetsThisStage[idx];
+         float current = hand.getActuatorPosition(i);
+
+         float vel;
+         if (Math.abs(current - target) < TOLERANCE)
+         {
+            vel = 0f;
+         }
+         else
+         {
+            float speed = Math.abs(30);
+            vel = (current < target) ? speed : -speed;
+            stageComplete = false;
+         }
+
+         hand.setCommandValue(i, vel);
+      }
+
+      if (stageComplete)
+      {
+         gripStage++;
+      }
    }
 
    public AbilityHandInterface getHand()
