@@ -46,7 +46,10 @@ public class AbilityHandHardwareCommunication
    {
       String serialNumber = newHandSerialNumber.toString();
       registeredHandSerialNumbers.add(serialNumber);
-      commandMessages.put(serialNumber, new AbilityHandCommand());
+
+      AbilityHandCommand commandMessage = new AbilityHandCommand();
+      commandMessage.setSerialNumber(serialNumber);
+      commandMessages.put(serialNumber, commandMessage);
    }
 
    /**
