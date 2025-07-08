@@ -52,7 +52,7 @@ public class AbilityHandController
    }
 
    private static final float TOLERANCE = 5.0f;
-   private static final float THUMB_CLEAR_POSITION = 20.0f;
+   private static final float THUMB_CLEAR_POSITION = 30.0f;
 
    private final AbilityHandInterface hand;
 
