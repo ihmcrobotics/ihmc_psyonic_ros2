@@ -23,23 +23,23 @@ public class AbilityHandController
 
    public enum Grip
    {
-      POWER (new int[][]{{0, 1, 2, 3}, {5}, {4}},  new float[][]{{100, 100, 100, 100}, {-75}, {75}}),
-      KEY   (new int[][]{{0, 1, 2, 3}, {5}, {4}},  new float[][]{{90, 90, 90, 90}, {-20}, {75}}),
-      TRIPOD(new int[][]{{0, 1, 2, 3}, {5}, {4}},    new float[][]{{60, 60, 20, 20}, {-75}, {60}}),
-      RELAX (new int[][]{{4}, {0, 1, 2, 3, 5}},    new float[][]{{30}, {30, 30, 30, 30, -30}}),
-      RUDE  (new int[][]{{0, 1, 2, 3, 4}, {5}},    new float[][]{{100, 10, 100, 100, 20}, {-30}});
+      POWER (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{100, 100, 100, 100}, {-75}, {75}}),
+      KEY   (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{90, 90, 90, 90}, {-20}, {75}}),
+      TRIPOD(new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{60, 60, 20, 20}, {-75}, {60}}),
+      RELAX (new int[][] {{4}, {0, 1, 2, 3, 5}},   new float[][] {{30}, {30, 30, 30, 30, -30}}),
+      RUDE  (new int[][] {{0, 1, 2, 3, 4}, {5}},   new float[][] {{100, 10, 100, 100, 20}, {-30}});
 
       public static final Grip[] values = values();
 
       final int[][] stages;
       final float[][] positions;
-      
+
       Grip(int[][] stages, float[][] positions)
       {
          this.stages = stages;
          this.positions = positions;
       }
-      
+
       public static Grip fromByte(byte ordinal)
       {
          return values[ordinal];
@@ -94,25 +94,27 @@ public class AbilityHandController
       hand.setCommandValues(goalVelocities);
    }
 
+   private float calculateVelocityToPosition(int actuatorIndex, float goalPosition, float goalVelocity)
+   {
+      // Get the current position
+      float currentPosition = hand.getActuatorPosition(actuatorIndex);
+
+      // If we've reached the goal position, velocity should be 0 (stop moving)
+      if (Math.abs(currentPosition - goalPosition) < TOLERANCE)
+         return 0.0f;
+
+      // Otherwise velocity should be in the correct direction
+      float speed = Math.abs(goalVelocity);
+      return currentPosition < goalPosition ? speed : -speed;
+   }
+
    private void updateVelToPosControl()
    {
       hand.setCommandType(AbilityHandCommandType.VELOCITY);
 
       for (int i = 0; i < ACTUATOR_COUNT; i++)
       {
-         float currentPos = hand.getActuatorPosition(i);
-
-         float velocity;
-         if (Math.abs(currentPos - goalPositions[i]) < TOLERANCE)
-         {
-            velocity = 0;
-         }
-         else
-         {
-            float goalVelocity = Math.abs(goalVelocities[i]);
-            velocity = (currentPos < goalPositions[i]) ? goalVelocity : -goalVelocity;
-         }
-
+         float velocity = calculateVelocityToPosition(i, goalPositions[i], goalVelocities[i]);
          hand.setCommandValue(i, velocity);
       }
    }
@@ -129,13 +131,14 @@ public class AbilityHandController
          hand.setCommandType(AbilityHandCommandType.VELOCITY);
          float currentThumb = hand.getActuatorPosition(4);
          float goalThumb = 20.0f;
-         for(int i = 0; i < ACTUATOR_COUNT; i++)
+         for (int i = 0; i < ACTUATOR_COUNT; i++)
          {
-            if(i != 4)
+            if (i != 4)
             {
                hand.setCommandValue(i, 0);
             }
          }
+
          float velocity;
          if (Math.abs(currentThumb - goalThumb) < TOLERANCE || Math.abs(currentThumb) < goalThumb)
          {
@@ -169,24 +172,16 @@ public class AbilityHandController
       hand.setCommandType(AbilityHandCommandType.VELOCITY);
 
       boolean stageComplete = true;
-
       for (int i = 0; i < actuatorsToMove.length; i++)
       {
          int actuatorIndex = actuatorsToMove[i];
          float goalPosition = goalPositions[i];
-         float currentPosition = hand.getActuatorPosition(actuatorIndex);
+         float goalVelocity = goalVelocities[actuatorIndex];
 
-         float velocity;
-         if (Math.abs(currentPosition - goalPosition) < TOLERANCE)
-         {
-            velocity = 0f;
-         }
-         else
-         {
-            float speed = Math.abs(goalVelocities[actuatorIndex]);
-            velocity = (currentPosition < goalPosition) ? speed : -speed;
+         float velocity = calculateVelocityToPosition(actuatorIndex, goalPosition, goalVelocity);
+
+         if (velocity != 0.0f)
             stageComplete = false;
-         }
 
          hand.setCommandValue(actuatorIndex, velocity);
       }
