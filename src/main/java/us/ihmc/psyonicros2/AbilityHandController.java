@@ -135,27 +135,28 @@ public class AbilityHandController
       // Using velocity to position control
       hand.setCommandType(AbilityHandCommandType.VELOCITY);
 
-      // First step of every grip is to move the thumb out of the way (stage = -1)
+      // Move the thumb out of the way before any grip (stage = -1)
       if (gripStage == -1)
       {
-         for (int i = 0; i < ACTUATOR_COUNT; i++)
-         {
-            float velocity;
-            if (i == 4) // Thumb flexor
-            {
-               velocity = calculateVelocityToPosition(i, THUMB_CLEAR_POSITION, goalVelocities[i]);
-               if (velocity == 0.0f)
-                  gripStage = 0; // Start normal grip
-            }
-            else
-            {
-               velocity = 0.0f;
-            }
+         // Calculate the velocity required to read the clear position
+         float thumbVelocity = calculateVelocityToPosition(4, THUMB_CLEAR_POSITION, goalVelocities[4]);
 
-            hand.setCommandValue(i, velocity);
+         // If velocity is 0 or positive, thumb is already clear. Only move thumb if velocity is negative.
+         if (thumbVelocity < 0.0f)
+         {
+            // Tell thumb to move out of the way
+            hand.setCommandValue(4, thumbVelocity);
+
+            // Rest of the fingers shouldn't move
+            for (int i = 0; i < ACTUATOR_COUNT; ++i)
+               if (i != 4)
+                  hand.setCommandValue(i, 0.0f);
+
+            return;
          }
 
-         return;
+         // Thumb is clear. Start normal grip stages.
+         gripStage = 0;
       }
 
       // Get the actuators that need to move during this stage and their goal positions
