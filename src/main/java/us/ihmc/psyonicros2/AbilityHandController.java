@@ -52,7 +52,7 @@ public class AbilityHandController
    }
 
    private static final float TOLERANCE = 5.0f;
-   private boolean goingHome = false;
+   private static final float THUMB_CLEAR_POSITION = 20.0f;
 
    private final AbilityHandInterface hand;
 
@@ -122,11 +122,10 @@ public class AbilityHandController
    private void updateGripControl()
    {
       // If goal grip changed, reset grip stage
-      if (previousGrip != grip || goingHome)
+      if (previousGrip != grip)
       {
-         gripStage = 0;
+         gripStage = -1;
          previousGrip = grip;
-         goingHome = true;
       }
 
       // If we’re past the last stage, the grip is completed. No need to do anything
@@ -136,17 +135,17 @@ public class AbilityHandController
       // Using velocity to position control
       hand.setCommandType(AbilityHandCommandType.VELOCITY);
 
-      if (goingHome)
+      // First step of every grip is to move the thumb out of the way (stage = -1)
+      if (gripStage == -1)
       {
-         float goalThumb = 20.0f;
          for (int i = 0; i < ACTUATOR_COUNT; i++)
          {
             float velocity;
-            if (i == 4)
+            if (i == 4) // Thumb flexor
             {
-               velocity = calculateVelocityToPosition(i, goalThumb, goalVelocities[i]);
+               velocity = calculateVelocityToPosition(i, THUMB_CLEAR_POSITION, goalVelocities[i]);
                if (velocity == 0.0f)
-                  goingHome = false;
+                  gripStage = 0; // Start normal grip
             }
             else
             {
