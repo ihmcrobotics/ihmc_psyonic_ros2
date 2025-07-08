@@ -23,11 +23,11 @@ public class AbilityHandController
 
    public enum Grip
    {
-      POWER (new int[][]{{0, 1, 2, 3}, {5}, {4}},  new float[][]{{90, 90, 90, 90}, {-75}, {75}}),
+      POWER (new int[][]{{0, 1, 2, 3}, {5}, {4}},  new float[][]{{100, 100, 100, 100}, {-75}, {75}}),
       KEY   (new int[][]{{0, 1, 2, 3}, {5}, {4}},  new float[][]{{90, 90, 90, 90}, {-20}, {75}}),
       TRIPOD(new int[][]{{0, 1, 2, 3}, {5}, {4}},    new float[][]{{60, 60, 20, 20}, {-75}, {60}}),
       RELAX (new int[][]{{4}, {0, 1, 2, 3, 5}},    new float[][]{{30}, {30, 30, 30, 30, -30}}),
-      RUDE  (new int[][]{{0, 1, 2, 3, 4}, {5}},    new float[][]{{100, 30, 100, 100, 20}, {-30}});
+      RUDE  (new int[][]{{0, 1, 2, 3, 4}, {5}},    new float[][]{{100, 10, 100, 100, 20}, {-30}});
 
       public static final Grip[] values = values();
 
@@ -51,7 +51,7 @@ public class AbilityHandController
       }
    }
 
-   private static final float TOLERANCE = 7.5f;
+   private static final float TOLERANCE = 5.0f;
    private boolean goingHome = false;
 
    private final AbilityHandInterface hand;
@@ -153,7 +153,13 @@ public class AbilityHandController
 
       // If we’re past the last stage, the grip is completed. No need to do anything
       if (gripStage >= grip.stages.length)
+      {
+         for (int i = 0; i < ACTUATOR_COUNT; i++)
+         {
+            hand.setCommandValue(i, 0);
+         }
          return;
+      }
 
       // Get the actuators that need to move during this stage and their goal positions
       int[] actuatorsToMove = grip.stages[gripStage];
