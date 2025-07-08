@@ -30,6 +30,8 @@ public class AbilityHandHardwareCommunication
 
    public AbilityHandHardwareCommunication(String nodeName)
    {
+      registeredHandSerialNumbers = new ArrayList<>(2);
+
       node = new ROS2NodeBuilder().buildRealtime(nodeName);
 
       stateListener = new AbilityHandMessageListener<>(AbilityHandState::new);
@@ -38,8 +40,6 @@ public class AbilityHandHardwareCommunication
 
       commandMessages = new HashMap<>();
       commandPublisher = node.createPublisher(AbilityHandROS2API.COMMAND_TOPIC);
-
-      registeredHandSerialNumbers = new ArrayList<>(2);
    }
 
    private void registerNewHand(StringBuilder newHandSerialNumber)
