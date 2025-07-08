@@ -23,9 +23,9 @@ public class AbilityHandController
 
    public enum Grip
    {
-      POWER (new int[][]{{0, 1, 2, 3}, {5}, {4}},  new float[][]{{90, 90, 90, 90}, {-50}, {50}}),
-      KEY   (new int[][]{{0}, {1, 2, 3, 4}, {5}},  new float[][]{{50}, {70, 70, 70, 70}, {-30}}),
-      TRIPOD(new int[][]{{0, 1, 2}, {3, 4, 5}},    new float[][]{{60, 60, 60}, {90, 90, -90}}),
+      POWER (new int[][]{{0, 1, 2, 3}, {5}, {4}},  new float[][]{{90, 90, 90, 90}, {-75}, {75}}),
+      KEY   (new int[][]{{0, 1, 2, 3}, {5}, {4}},  new float[][]{{90, 90, 90, 90}, {-20}, {75}}),
+      TRIPOD(new int[][]{{0, 1, 2, 3}, {5}, {4}},    new float[][]{{60, 60, 20, 20}, {-75}, {60}}),
       RELAX (new int[][]{{4}, {0, 1, 2, 3, 5}},    new float[][]{{30}, {30, 30, 30, 30, -30}}),
       RUDE  (new int[][]{{0, 1, 2, 3, 4}, {5}},    new float[][]{{100, 30, 100, 100, 20}, {-30}});
 
@@ -52,6 +52,7 @@ public class AbilityHandController
    }
 
    private static final float TOLERANCE = 7.5f;
+   private boolean goingHome = false;
 
    private final AbilityHandInterface hand;
 
@@ -119,10 +120,35 @@ public class AbilityHandController
    private void updateGripControl()
    {
       // If goal grip changed, reset grip stage
-      if (previousGrip != grip)
+      if (previousGrip != grip || goingHome)
       {
          gripStage = 0;
          previousGrip = grip;
+         goingHome = true;
+
+         hand.setCommandType(AbilityHandCommandType.VELOCITY);
+         float currentThumb = hand.getActuatorPosition(4);
+         float goalThumb = 20.0f;
+         for(int i = 0; i < ACTUATOR_COUNT; i++)
+         {
+            if(i != 4)
+            {
+               hand.setCommandValue(i, 0);
+            }
+         }
+         float velocity;
+         if (Math.abs(currentThumb - goalThumb) < TOLERANCE || Math.abs(currentThumb) < goalThumb)
+         {
+            velocity = 0.0f;
+            goingHome = false;
+         }
+         else
+         {
+            float speed = Math.abs(goalVelocities[4]);
+            velocity = (currentThumb < goalThumb) ? speed : -speed;
+         }
+         hand.setCommandValue(4, velocity);
+         return;
       }
 
       // If we’re past the last stage, the grip is completed. No need to do anything
