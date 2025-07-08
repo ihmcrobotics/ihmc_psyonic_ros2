@@ -127,49 +127,41 @@ public class AbilityHandController
          gripStage = 0;
          previousGrip = grip;
          goingHome = true;
-
-         hand.setCommandType(AbilityHandCommandType.VELOCITY);
-         float currentThumb = hand.getActuatorPosition(4);
-         float goalThumb = 20.0f;
-         for (int i = 0; i < ACTUATOR_COUNT; i++)
-         {
-            if (i != 4)
-            {
-               hand.setCommandValue(i, 0);
-            }
-         }
-
-         float velocity;
-         if (Math.abs(currentThumb - goalThumb) < TOLERANCE || Math.abs(currentThumb) < goalThumb)
-         {
-            velocity = 0.0f;
-            goingHome = false;
-         }
-         else
-         {
-            float speed = Math.abs(goalVelocities[4]);
-            velocity = (currentThumb < goalThumb) ? speed : -speed;
-         }
-         hand.setCommandValue(4, velocity);
-         return;
       }
 
       // If we’re past the last stage, the grip is completed. No need to do anything
       if (gripStage >= grip.stages.length)
+         return;
+
+      // Using velocity to position control
+      hand.setCommandType(AbilityHandCommandType.VELOCITY);
+
+      if (goingHome)
       {
+         float goalThumb = 20.0f;
          for (int i = 0; i < ACTUATOR_COUNT; i++)
          {
-            hand.setCommandValue(i, 0);
+            float velocity;
+            if (i == 4)
+            {
+               velocity = calculateVelocityToPosition(i, goalThumb, goalVelocities[i]);
+               if (velocity == 0.0f)
+                  goingHome = false;
+            }
+            else
+            {
+               velocity = 0.0f;
+            }
+
+            hand.setCommandValue(i, velocity);
          }
+
          return;
       }
 
       // Get the actuators that need to move during this stage and their goal positions
       int[] actuatorsToMove = grip.stages[gripStage];
       float[] goalPositions = grip.positions[gripStage];
-
-      // Using velocity to position control
-      hand.setCommandType(AbilityHandCommandType.VELOCITY);
 
       boolean stageComplete = true;
       for (int i = 0; i < actuatorsToMove.length; i++)
