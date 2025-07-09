@@ -23,7 +23,7 @@ public class YoAbilityHand implements AbilityHandInterface
       this.serialNumber = serialNumber;
       this.handSide = handSide;
 
-      String prefix = handSide.name() + "AbilityHand";
+      String prefix = handSide.name() + "AbilityHand_" + serialNumber + "_";
       commandType = new YoEnum<>(prefix + "CommandType", registry, AbilityHandCommandType.class);
       commandType.set(AbilityHandCommandType.POSITION);
 
