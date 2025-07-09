@@ -41,7 +41,6 @@ public class YoAbilityHandManager extends AbilityHandManager
       }
 
       super.update();
-
    }
 
    @Override
