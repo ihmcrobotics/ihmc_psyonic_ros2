@@ -4,10 +4,10 @@ import ihmc_psyonic_ros2.msg.dds.AbilityHandCommand;
 import ihmc_psyonic_ros2.msg.dds.AbilityHandState;
 import org.junit.jupiter.api.Test;
 import us.ihmc.psyonicros2.AbilityHandCommandType;
-import us.ihmc.psyonicros2.AbilityHandController;
-import us.ihmc.psyonicros2.AbilityHandController.ControlMode;
-import us.ihmc.psyonicros2.AbilityHandControllerCommunication;
-import us.ihmc.psyonicros2.AbilityHandHardwareCommunication;
+import us.ihmc.psyonicros2.AbilityHandManager;
+import us.ihmc.psyonicros2.AbilityHandManager.ControlMode;
+import us.ihmc.psyonicros2.AbilityHandROS2ControllerCommunication;
+import us.ihmc.psyonicros2.AbilityHandROS2HardwareCommunication;
 import us.ihmc.psyonicros2.AbilityHandROS2API;
 import us.ihmc.robotics.robotSide.RobotSide;
 import us.ihmc.ros2.ROS2Node;
@@ -55,21 +55,21 @@ public class AbilityHandCommunicationTest
          stateReceived.set(stateMessage);
       });
 
-      // Initialize a test hand and its controller
+      // Initialize a test hand and its manager
       TestAbilityHand testHand = new TestAbilityHand(SERIAL_NUMBER, HAND_SIDE);
-      AbilityHandController controller = new AbilityHandController(testHand);
+      AbilityHandManager manager = new AbilityHandManager(testHand);
       testHand.setActuatorPositions(ACTUATOR_POSITIONS); // Set the state of the hand
 
       // Create an instance of the communication class
-      AbilityHandControllerCommunication controllerCommunication = new AbilityHandControllerCommunication("test_controller_comm");
+      AbilityHandROS2ControllerCommunication controllerCommunication = new AbilityHandROS2ControllerCommunication("test_controller_comm");
 
       // Publish before starting. Nothing should happen
       publisher.publish(command);
-      controllerCommunication.publishState(controller);
+      controllerCommunication.publishState(manager);
 
       // Read values
-      controllerCommunication.readCommand(controller);
-      controller.update();
+      controllerCommunication.readCommand(manager);
+      manager.update();
 
       // Assert that no messages were received
       assertFalse(received.get());
@@ -79,7 +79,7 @@ public class AbilityHandCommunicationTest
       LockSupport.parkNanos((long) 1E9);
 
       publisher.publish(command);
-      controllerCommunication.publishState(controller);
+      controllerCommunication.publishState(manager);
 
       // Wait for the state message to be received
       synchronized (received)
@@ -89,8 +89,8 @@ public class AbilityHandCommunicationTest
       }
 
       // Read values
-      controllerCommunication.readCommand(controller);
-      controller.update();
+      controllerCommunication.readCommand(manager);
+      manager.update();
 
       // Assert that the messages were received
       assertTrue(received.get());
@@ -142,7 +142,7 @@ public class AbilityHandCommunicationTest
       });
 
       // Create the communication instance
-      AbilityHandHardwareCommunication communication = new AbilityHandHardwareCommunication("test_hardware_comm");
+      AbilityHandROS2HardwareCommunication communication = new AbilityHandROS2HardwareCommunication("test_hardware_comm");
 
       // Publish before starting. Nothing should happen
       statePublisher.publish(state);

@@ -6,14 +6,14 @@ import us.ihmc.yoVariables.variable.YoEnum;
 
 import static us.ihmc.psyonicros2.AbilityHandInterface.ACTUATOR_COUNT;
 
-public class YoAbilityHandController extends AbilityHandController
+public class YoAbilityHandManager extends AbilityHandManager
 {
    private final YoEnum<ControlMode> controlMode;
    private final YoEnum<Grip> grip;
    private final YoDouble[] goalPositions = new YoDouble[ACTUATOR_COUNT];
    private final YoDouble[] goalVelocities = new YoDouble[ACTUATOR_COUNT];
 
-   public YoAbilityHandController(YoRegistry registry, AbilityHandInterface hand)
+   public YoAbilityHandManager(YoRegistry registry, AbilityHandInterface hand)
    {
       super(hand);
 

@@ -16,7 +16,7 @@ import java.util.Map;
  * <p>High level ROS 2 communication for the {@link AbilityHandInterface}. Communicates with low-level hardware control process.</p>
  * <p>Subscribes to {@link AbilityHandState} messages and publishes {@link AbilityHandCommand} messages.</p>
  */
-public class AbilityHandHardwareCommunication
+public class AbilityHandROS2HardwareCommunication
 {
    private final RealtimeROS2Node node;
 
@@ -28,7 +28,7 @@ public class AbilityHandHardwareCommunication
 
    private final List<String> registeredHandSerialNumbers;
 
-   public AbilityHandHardwareCommunication(String nodeName)
+   public AbilityHandROS2HardwareCommunication(String nodeName)
    {
       registeredHandSerialNumbers = new ArrayList<>(2);
 

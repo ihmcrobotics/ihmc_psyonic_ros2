@@ -2,7 +2,7 @@ package us.ihmc.psyonicros2;
 
 import static us.ihmc.psyonicros2.AbilityHandInterface.ACTUATOR_COUNT;
 
-public class AbilityHandController
+public class AbilityHandManager
 {
    public enum ControlMode
    {
@@ -65,7 +65,7 @@ public class AbilityHandController
    private final float[] goalPositions;
    private final float[] goalVelocities;
 
-   public AbilityHandController(AbilityHandInterface hand)
+   public AbilityHandManager(AbilityHandInterface hand)
    {
       this.hand = hand;
       goalPositions = new float[] {30.0f, 30.0f, 30.0f, 30.0f, 30.0f, -30.0f};

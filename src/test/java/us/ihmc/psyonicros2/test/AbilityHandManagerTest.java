@@ -4,40 +4,40 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import us.ihmc.psyonicros2.AbilityHandCommandType;
-import us.ihmc.psyonicros2.AbilityHandController;
-import us.ihmc.psyonicros2.AbilityHandController.ControlMode;
-import us.ihmc.psyonicros2.AbilityHandController.Grip;
+import us.ihmc.psyonicros2.AbilityHandManager;
+import us.ihmc.psyonicros2.AbilityHandManager.ControlMode;
+import us.ihmc.psyonicros2.AbilityHandManager.Grip;
 import us.ihmc.psyonicros2.AbilityHandInterface;
 import us.ihmc.psyonicros2.YoAbilityHand;
-import us.ihmc.psyonicros2.YoAbilityHandController;
+import us.ihmc.psyonicros2.YoAbilityHandManager;
 import us.ihmc.robotics.robotSide.RobotSide;
 
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AbilityHandControllerTest
+public class AbilityHandManagerTest
 {
    private static Stream<Arguments> getControllers()
    {
       TestAbilityHand abilityHand = new TestAbilityHand("24ABH000", RobotSide.LEFT);
-      AbilityHandController controller = new AbilityHandController(abilityHand);
+      AbilityHandManager manager = new AbilityHandManager(abilityHand);
 
       YoAbilityHand yoAbilityHand = new YoAbilityHand(null, "24ABH001", RobotSide.RIGHT);
-      YoAbilityHandController yoController = new YoAbilityHandController(null, yoAbilityHand);
+      YoAbilityHandManager yoManager = new YoAbilityHandManager(null, yoAbilityHand);
 
-      return Stream.of(Arguments.of(controller, abilityHand), Arguments.of(yoController, yoAbilityHand));
+      return Stream.of(Arguments.of(manager, abilityHand), Arguments.of(yoManager, yoAbilityHand));
    }
 
    @ParameterizedTest
    @MethodSource("getControllers")
-   public void testPositionControl(AbilityHandController controller, AbilityHandInterface hand)
+   public void testPositionControl(AbilityHandManager manager, AbilityHandInterface hand)
    {
       float[] positions = {10f, 20f, 30f, 40f, 50f, -10f};
-      controller.setControlMode(ControlMode.POSITION);
-      controller.setGoalPositions(positions);
+      manager.setControlMode(ControlMode.POSITION);
+      manager.setGoalPositions(positions);
 
-      controller.update();
+      manager.update();
 
       assertEquals(AbilityHandCommandType.POSITION, hand.getCommandType());
       for(int i = 0; i < positions.length; i++)
@@ -48,13 +48,13 @@ public class AbilityHandControllerTest
 
    @ParameterizedTest
    @MethodSource("getControllers")
-   public void testVelocityControl(AbilityHandController controller, AbilityHandInterface hand)
+   public void testVelocityControl(AbilityHandManager manager, AbilityHandInterface hand)
    {
       float[] velocities = {1f, 2f, 3f, 4f, 5f, -5f};
-      controller.setControlMode(ControlMode.VELOCITY);
-      controller.setGoalVelocities(velocities);
+      manager.setControlMode(ControlMode.VELOCITY);
+      manager.setGoalVelocities(velocities);
 
-      controller.update();
+      manager.update();
 
       assertEquals(AbilityHandCommandType.VELOCITY, hand.getCommandType());
       for(int i = 0; i < velocities.length; i++)
@@ -65,7 +65,7 @@ public class AbilityHandControllerTest
 
    @ParameterizedTest
    @MethodSource("getControllers")
-   public void testVelToPosControl(AbilityHandController controller, AbilityHandInterface hand)
+   public void testVelToPosControl(AbilityHandManager manager, AbilityHandInterface hand)
    {
       // current < goal => positive, current > goal => negative
       float[] current = {5f, 50f, 0f, 0f, 0f, 0f};
@@ -73,11 +73,11 @@ public class AbilityHandControllerTest
       float[] speeds = {2f, 3f, 0f, 0f, 0f, 0f};
 
       hand.setActuatorPositions(current);
-      controller.setControlMode(ControlMode.VEL_TO_POS);
-      controller.setGoalPositions(goals);
-      controller.setGoalVelocities(speeds);
+      manager.setControlMode(ControlMode.VEL_TO_POS);
+      manager.setGoalPositions(goals);
+      manager.setGoalVelocities(speeds);
 
-      controller.update();
+      manager.update();
 
       assertEquals(AbilityHandCommandType.VELOCITY, hand.getCommandType());
       assertTrue(hand.getCommandValue(0) > 0, "Index 0 should move positively");
@@ -86,17 +86,17 @@ public class AbilityHandControllerTest
 
    @ParameterizedTest
    @MethodSource("getControllers")
-   public void testGripInitialThumbStage(AbilityHandController controller, AbilityHandInterface hand)
+   public void testGripInitialThumbStage(AbilityHandManager manager, AbilityHandInterface hand)
    {
       // Thumb (index 4) must clear first: simulate it at the clear position already
       float[] current = {30f, 30f, 30f, 30f, 30f, 30f};
       hand.setActuatorPositions(current);
 
-      controller.setGoalVelocities(new float[] {5f, 5f, 5f, 5f, 5f, 5f});
-      controller.setControlMode(ControlMode.GRIP);
-      controller.setGrip(Grip.POWER);
+      manager.setGoalVelocities(new float[] {5f, 5f, 5f, 5f, 5f, 5f});
+      manager.setControlMode(ControlMode.GRIP);
+      manager.setGrip(Grip.POWER);
 
-      controller.update();
+      manager.update();
 
       assertEquals(AbilityHandCommandType.VELOCITY, hand.getCommandType());
 
