@@ -162,9 +162,14 @@ public class AbilityHandManager
     */
    private float calculateVelocityToPosition(int actuatorIndex, float goalPosition, float goalVelocity)
    {
+      // Get the current position
       float currentPosition = hand.getActuatorPosition(actuatorIndex);
+
+      // If we've reached the goal position, velocity should be 0 (stop moving)
       if (Math.abs(currentPosition - goalPosition) < TOLERANCE)
          return 0.0f;
+
+      // Otherwise velocity should be in the correct direction
       float speed = Math.abs(goalVelocity);
       return currentPosition < goalPosition ? speed : -speed;
    }
@@ -173,6 +178,7 @@ public class AbilityHandManager
    private void updateVelToPosControl()
    {
       hand.setCommandType(AbilityHandCommandType.VELOCITY);
+
       for (int i = 0; i < ACTUATOR_COUNT; i++)
       {
          float velocity = calculateVelocityToPosition(i, goalPositions[i], goalVelocities[i]);
