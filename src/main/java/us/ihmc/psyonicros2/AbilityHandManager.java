@@ -92,24 +92,16 @@ public class AbilityHandManager
       }
    }
 
-   /** Tolerance for considering a position reached, in degrees. */
    private static final float TOLERANCE = 2.0f;
-   /** Clear position for the thumb before initiating grip stages. */
    private static final float THUMB_CLEAR_POSITION = 30.0f;
 
-   /** Underlying hand interface for sending commands and retrieving state. */
    private final AbilityHandInterface hand;
-   /** Current control mode. */
+
    private ControlMode controlMode = ControlMode.POSITION;
-   /** Current grip pattern. */
    private Grip grip = null;
-   /** Previous grip to detect changes and reset stages. */
    private Grip previousGrip = null;
-   /** Current stage in the multi-stage grip sequence. */
    private int gripStage = Integer.MAX_VALUE;
-   /** Target positions for each actuator. */
    private final float[] goalPositions;
-   /** Target velocities for each actuator. */
    private final float[] goalVelocities;
 
    /**
