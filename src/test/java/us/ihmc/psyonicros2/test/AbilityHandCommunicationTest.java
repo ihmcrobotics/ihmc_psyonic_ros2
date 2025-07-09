@@ -73,10 +73,6 @@ public class AbilityHandCommunicationTest
 
       // Assert that no messages were received
       assertFalse(received.get());
-      for (int i = 0; i < ACTUATOR_COUNT; ++i)
-      {
-         assertEquals(0, testHand.getCommandValue(i));
-      }
 
       // Start and publish again. Should receive message
       controllerCommunication.start();

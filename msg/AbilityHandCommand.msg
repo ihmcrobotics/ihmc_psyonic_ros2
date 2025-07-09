@@ -15,6 +15,7 @@ byte KEY_GRIP=1
 byte TRIPOD_GRIP=2
 byte RELAX_GRIP=3
 byte RUDE_GRIP=4
+byte HOOK_GRIP=5
 
 byte grip
 
