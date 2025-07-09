@@ -27,7 +27,8 @@ public class AbilityHandController
       KEY   (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{90, 90, 90, 90}, {-20}, {75}}),
       TRIPOD(new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{60, 60, 20, 20}, {-75}, {60}}),
       RELAX (new int[][] {{4}, {0, 1, 2, 3, 5}},   new float[][] {{30}, {30, 30, 30, 30, -30}}),
-      RUDE  (new int[][] {{0, 1, 2, 3, 4}, {5}},   new float[][] {{100, 10, 100, 100, 20}, {-30}});
+      RUDE  (new int[][] {{0, 1, 2, 3, 4}, {5}},   new float[][] {{100, 10, 100, 100, 20}, {-30}}),
+      HOOK (new int[][] {{0, 1, 2, 3, 4}, {5}}, new float[][] {{70, 70, 70, 70, 10}, {-10}});
 
       public static final Grip[] values = values();
 
