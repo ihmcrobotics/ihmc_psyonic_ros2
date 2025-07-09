@@ -21,7 +21,7 @@ import java.util.concurrent.locks.LockSupport;
 import static org.junit.jupiter.api.Assertions.*;
 import static us.ihmc.psyonicros2.AbilityHandInterface.ACTUATOR_COUNT;
 
-public class AbilityHandCommunicationTest
+public class AbilityHandROS2CommunicationTest
 {
    @Test
    public void testControllerCommunication() throws InterruptedException
