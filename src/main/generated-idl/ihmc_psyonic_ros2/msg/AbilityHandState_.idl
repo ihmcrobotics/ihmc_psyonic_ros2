@@ -18,7 +18,11 @@ module ihmc_psyonic_ros2
       struct AbilityHandState
       {
         /**
-         * Specifies the side of the robot of the hand being referred to
+         * The hand's serial number. E.g. 24ABH265
+         */
+        string<8> serial_number;
+        /**
+         * Specifies whether the hand is a left or right hand
          */
         @defaultValue(value=255)
         octet hand_side;

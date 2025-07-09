@@ -22,6 +22,8 @@ public interface AbilityHandInterface
 {
    int ACTUATOR_COUNT = 6;
 
+   String getSerialNumber();
+
    /**
     * Get this hand's side.
     *

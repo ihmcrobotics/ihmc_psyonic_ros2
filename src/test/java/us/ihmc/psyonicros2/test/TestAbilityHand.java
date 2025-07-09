@@ -6,14 +6,22 @@ import us.ihmc.robotics.robotSide.RobotSide;
 
 class TestAbilityHand implements AbilityHandInterface
 {
+   private final String serialNumber;
    private final RobotSide handSide;
    private AbilityHandCommandType commandType;
    private final float[] commandValues = new float[ACTUATOR_COUNT];
    private final float[] fingerPositions = new float[ACTUATOR_COUNT];
 
-   public TestAbilityHand(RobotSide handSide)
+   public TestAbilityHand(String serialNumber, RobotSide handSide)
    {
+      this.serialNumber = serialNumber;
       this.handSide = handSide;
+   }
+
+   @Override
+   public String getSerialNumber()
+   {
+      return serialNumber;
    }
 
    @Override
