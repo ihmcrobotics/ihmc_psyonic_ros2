@@ -48,7 +48,11 @@ public class AbilityHandMessageListener<T extends Packet<T>> implements NewMessa
       {
          if (serialNumber.compareTo(handMessageList.first(i)) == 0)
          {
-            handMessageList.second(i).set(message);
+            synchronized (handMessageList.second(i))
+            {
+               handMessageList.second(i).set(message);
+            }
+
             return;
          }
       }
@@ -69,7 +73,11 @@ public class AbilityHandMessageListener<T extends Packet<T>> implements NewMessa
       {
          if (serialNumber.contentEquals(handMessageList.first(i)))
          {
-            messageToPack.set(handMessageList.second(i));
+            synchronized (handMessageList.second(i))
+            {
+               messageToPack.set(handMessageList.second(i));
+            }
+
             return true;
          }
       }
