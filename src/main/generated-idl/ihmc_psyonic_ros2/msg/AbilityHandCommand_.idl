@@ -34,6 +34,9 @@ module ihmc_psyonic_ros2
       const octet RUDE_GRIP =
       4;
 
+      const octet HOOK_GRIP =
+      5;
+
 
       @TypeCode(type="ihmc_psyonic_ros2::msg::dds_::AbilityHandCommand_")
       struct AbilityHandCommand

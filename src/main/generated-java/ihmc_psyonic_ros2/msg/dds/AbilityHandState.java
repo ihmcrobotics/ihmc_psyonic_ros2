@@ -15,7 +15,7 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
             */
    public java.lang.StringBuilder serial_number_;
    /**
-            * Specifies the side of the robot of the hand being referred to
+            * Specifies whether the hand is a left or right hand
             */
    public byte hand_side_ = (byte) 255;
    /**
@@ -76,14 +76,14 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
    }
 
    /**
-            * Specifies the side of the robot of the hand being referred to
+            * Specifies whether the hand is a left or right hand
             */
    public void setHandSide(byte hand_side)
    {
       hand_side_ = hand_side;
    }
    /**
-            * Specifies the side of the robot of the hand being referred to
+            * Specifies whether the hand is a left or right hand
             */
    public byte getHandSide()
    {
