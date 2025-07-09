@@ -6,12 +6,8 @@ import us.ihmc.psyonicros2.AbilityHandController;
 import us.ihmc.psyonicros2.AbilityHandController.ControlMode;
 import us.ihmc.psyonicros2.AbilityHandController.Grip;
 import us.ihmc.psyonicros2.AbilityHandCommandType;
-import us.ihmc.psyonicros2.AbilityHandInterface;
 import us.ihmc.robotics.robotSide.RobotSide;
 
-import java.util.Arrays;
-
-import static us.ihmc.psyonicros2.AbilityHandInterface.ACTUATOR_COUNT;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AbilityHandControllerTest
@@ -22,7 +18,7 @@ public class AbilityHandControllerTest
    @BeforeEach
    public void setUp()
    {
-      testHand = new TestAbilityHand();
+      testHand = new TestAbilityHand("24ABH374", RobotSide.RIGHT);
       controller = new AbilityHandController(testHand);
    }
 
@@ -36,7 +32,10 @@ public class AbilityHandControllerTest
       controller.update();
 
       assertEquals(AbilityHandCommandType.POSITION, testHand.getCommandType());
-      assertArrayEquals(positions, testHand.getLastCommandValues(), 1e-6f);
+      for(int i = 0; i < positions.length; i++)
+      {
+         assertEquals(positions[i], testHand.getCommandValue(i), 1e-6f);
+      }
    }
 
    @Test
@@ -49,7 +48,10 @@ public class AbilityHandControllerTest
       controller.update();
 
       assertEquals(AbilityHandCommandType.VELOCITY, testHand.getCommandType());
-      assertArrayEquals(velocities, testHand.getLastCommandValues(), 1e-6f);
+      for(int i = 0; i < velocities.length; i++)
+      {
+         assertEquals(velocities[i], testHand.getCommandValue(i), 1e-6f);
+      }
    }
 
    @Test
@@ -68,9 +70,8 @@ public class AbilityHandControllerTest
       controller.update();
 
       assertEquals(AbilityHandCommandType.VELOCITY, testHand.getCommandType());
-      float[] cmd = testHand.getLastCommandValues();
-      assertTrue(cmd[0] > 0, "Index 0 should move positively");
-      assertTrue(cmd[1] < 0, "Index 1 should move negatively");
+      assertTrue(testHand.getCommandValue(0) > 0, "Index 0 should move positively");
+      assertTrue(testHand.getCommandValue(1) < 0, "Index 1 should move negatively");
    }
 
    @Test
@@ -87,91 +88,11 @@ public class AbilityHandControllerTest
       controller.update();
 
       assertEquals(AbilityHandCommandType.VELOCITY, testHand.getCommandType());
-      float[] cmd = testHand.getLastCommandValues();
 
       // Thumb index 4 should be zero (already clear) and stage 0 should run:
       for (int i = 0; i < 4; i++)
-         assertTrue(cmd[i] > 0, "Finger " + i + " should start closing");
-      assertEquals(0f, cmd[4], 1e-6f, "Thumb should not move on clear");
-      assertEquals(0f, cmd[5], 1e-6f, "Pinky shouldn't move in stage 0");
-   }
-
-   /**
-    * Simple test stub for AbilityHandInterface.
-    * Clears its command buffer on each setCommandType(...)
-    * so tests can assert a fresh snapshot of that update's commands.
-    */
-   private static class TestAbilityHand implements AbilityHandInterface
-   {
-      private final float[] actuatorPositions = new float[ACTUATOR_COUNT];
-      private final float[] lastCommandValues = new float[ACTUATOR_COUNT];
-      private AbilityHandCommandType commandType;
-
-      @Override
-      public float getActuatorPosition(int index)
-      {
-         return actuatorPositions[index];
-      }
-
-      @Override
-      public void setActuatorPosition(int index, float value)
-      {
-
-      }
-
-      public void setActuatorPositions(float[] positions)
-      {
-         System.arraycopy(positions, 0, actuatorPositions, 0, ACTUATOR_COUNT);
-      }
-
-      @Override
-      public void setCommandType(AbilityHandCommandType type)
-      {
-         this.commandType = type;
-         // clear out any old commands
-         Arrays.fill(lastCommandValues, 0f);
-      }
-
-      @Override
-      public float getCommandValue(int index)
-      {
-         return 0;
-      }
-
-      @Override
-      public void setCommandValues(float[] values)
-      {
-         System.arraycopy(values, 0, lastCommandValues, 0, ACTUATOR_COUNT);
-      }
-
-      @Override
-      public void setCommandValue(int index, float value)
-      {
-         lastCommandValues[index] = value;
-      }
-
-      // Unused for these tests:
-      @Override
-      public String getSerialNumber()
-      {
-         return null;
-      }
-
-      @Override
-      public RobotSide getHandSide()
-      {
-         return null;
-      }
-
-      // Expose for assertions:
-      public AbilityHandCommandType getCommandType()
-      {
-         return commandType;
-      }
-
-      public float[] getLastCommandValues()
-      {
-         return lastCommandValues;
-      }
+         assertTrue(testHand.getCommandValue(i) > 0, "Finger " + i + " should start closing");
+      assertEquals(0f, testHand.getCommandValue(4), 1e-6f, "Thumb should not move on clear");
+      assertEquals(0f, testHand.getCommandValue(5), 1e-6f, "Pinky shouldn't move in stage 0");
    }
 }
