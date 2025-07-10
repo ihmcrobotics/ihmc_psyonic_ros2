@@ -214,6 +214,13 @@ public class AbilityHandManager
 
             return;
          }
+         else
+         {
+            for (int i = 0; i < ACTUATOR_COUNT; ++i)
+            {
+                  hand.setCommandValue(i, 0.0f);
+            }
+         }
 
          // Thumb is clear. Start normal grip stages.
          gripStage = 0;
