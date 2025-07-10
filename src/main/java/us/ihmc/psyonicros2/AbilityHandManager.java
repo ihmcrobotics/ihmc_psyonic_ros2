@@ -102,9 +102,12 @@ public class AbilityHandManager
    private final AbilityHandInterface hand;
 
    private ControlMode controlMode = ControlMode.POSITION;
+   private ControlMode previousControlMode = controlMode;
+
    private Grip grip = null;
    private Grip previousGrip = null;
    private int gripStage = Integer.MAX_VALUE;
+
    private final float[] goalPositions;
    private final float[] goalVelocities;
 
@@ -132,6 +135,8 @@ public class AbilityHandManager
          case VEL_TO_POS -> updateVelToPosControl();
          case GRIP -> updateGripControl();
       }
+
+      previousControlMode = controlMode;
    }
 
    /** Updates hand to direct position control using goalPositions. */
@@ -186,7 +191,7 @@ public class AbilityHandManager
    private void updateGripControl()
    {
       // If goal grip changed, reset grip stage
-      if (previousGrip != grip)
+      if (previousGrip != grip || previousControlMode != ControlMode.GRIP)
       {
          gripStage = -1;
          previousGrip = grip;
