@@ -15,7 +15,7 @@ public class AbilityHandCommandPubSubType implements us.ihmc.pubsub.TopicDataTyp
    @Override
    public final java.lang.String getDefinitionChecksum()
    {
-   		return "b721a2534ec176801cd00619396c185142da7c33f1ef39625e3767db21fbd4a4";
+   		return "262b988d1bfa1dac6fc3077fdd64ee8b37972ebc52bf6c7370974dcae790e0e8";
    }
    
    @Override

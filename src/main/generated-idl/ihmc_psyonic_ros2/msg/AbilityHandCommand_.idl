@@ -25,8 +25,11 @@ module ihmc_psyonic_ros2
       const octet KEY_GRIP =
       1;
 
-      const octet TRIPOD_GRIP =
+      const octet TRIPOD_OPEN_GRIP =
       2;
+
+      const octet TRIPOD_CLOSED_GRIP =
+      3;
 
       const octet RELAX_GRIP =
       3;
@@ -36,6 +39,12 @@ module ihmc_psyonic_ros2
 
       const octet HOOK_GRIP =
       5;
+
+      const octet PINCH_OPEN_GRIP =
+      6;
+
+      const octet PINCH_CLOSED_GRIP =
+      7;
 
 
       @TypeCode(type="ihmc_psyonic_ros2::msg::dds_::AbilityHandCommand_")
