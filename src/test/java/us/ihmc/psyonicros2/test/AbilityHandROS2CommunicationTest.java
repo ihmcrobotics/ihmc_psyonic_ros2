@@ -164,7 +164,7 @@ public class AbilityHandROS2CommunicationTest
 
       // Now the communications class should have received the state message
       assertEquals(1, communication.getAvailableHandSerialNumbers().size());
-      assertEquals(SERIAL_NUMBER, communication.getAvailableHandSerialNumbers().get(0));
+      assertEquals(SERIAL_NUMBER, communication.getAvailableHandSerialNumbersList().get(0));
 
       // Assert the state received is correct
       AbilityHandState stateReceived = communication.readState(SERIAL_NUMBER);
