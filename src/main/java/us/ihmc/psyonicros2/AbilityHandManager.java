@@ -42,15 +42,17 @@ public class AbilityHandManager
 
    /**
     * Predefined multi-stage grip patterns with associated finger indices and target positions.
+    * Use Grip Editor from the Psyonic app to get angles for other grips
     */
    public enum Grip
    {
       POWER (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{97.5f, 97.5f, 97.5f, 97.5f}, {-75}, {75}}),
       KEY   (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{90, 90, 90, 90}, {-20}, {75}}),
-      TRIPOD(new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{60, 60, 20, 20}, {-75}, {60}}),
+      TRIPOD(new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{60, 63, 20, 20}, {-76}, {54}}),
       RELAX (new int[][] {{4}, {0, 1, 2, 3, 5}},   new float[][] {{30}, {30, 30, 30, 30, -30}}),
       RUDE  (new int[][] {{0, 1, 2, 3, 4}, {5}},   new float[][] {{100, 10, 100, 100, 20}, {-30}}),
-      HOOK  (new int[][] {{0, 1, 2, 3, 4}, {5}},   new float[][] {{70, 70, 70, 70, 10}, {-10}});
+      HOOK  (new int[][] {{0, 1, 2, 3, 4}, {5}},   new float[][] {{70, 70, 70, 70, 10}, {-10}}),
+      PINCH (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new  float[][] {{61, 20, 20, 20}, {-67}, {53}});
 
       /** Array of all grip patterns. */
       public static final Grip[] values = values();
