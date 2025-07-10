@@ -7,6 +7,9 @@ import us.ihmc.ros2.ROS2Publisher;
 import us.ihmc.ros2.ROS2Subscription;
 import us.ihmc.ros2.RealtimeROS2Node;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,6 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AbilityHandROS2HardwareCommunication
 {
+   private final List<String> registeredHandSerialNumbers;
+
    private final RealtimeROS2Node node;
 
    private final AbilityHandMessageListener<AbilityHandState> stateListener;
@@ -27,6 +32,7 @@ public class AbilityHandROS2HardwareCommunication
 
    public AbilityHandROS2HardwareCommunication(String nodeName)
    {
+      registeredHandSerialNumbers = Collections.synchronizedList(new ArrayList<>(2));
       commandMessages = new ConcurrentHashMap<>(2);
 
       node = new ROS2NodeBuilder().buildRealtime(nodeName);
@@ -44,6 +50,7 @@ public class AbilityHandROS2HardwareCommunication
       AbilityHandCommand commandMessage = new AbilityHandCommand();
       commandMessage.setSerialNumber(serialNumber);
       commandMessages.put(serialNumber, commandMessage);
+      registeredHandSerialNumbers.add(serialNumber);
    }
 
    /**
@@ -55,6 +62,19 @@ public class AbilityHandROS2HardwareCommunication
    public Set<String> getAvailableHandSerialNumbers()
    {
       return commandMessages.keySet();
+   }
+
+   /**
+    * <p>Get a synchronized list of the serial numbers of the available hands.</p>
+    * <p>The list is created using {@link Collections#synchronizedList(List)},
+    * thus a synchronized block must be used when iterating over the list.</p>
+    * <p>Treat the list as read-only.</p>
+    *
+    * @return List of serial numbers of the available hands.
+    */
+   public List<String> getAvailableHandSerialNumbersList()
+   {
+      return registeredHandSerialNumbers;
    }
 
    /**
@@ -76,7 +96,7 @@ public class AbilityHandROS2HardwareCommunication
    public AbilityHandState readState(String serialNumber)
    {
       AbilityHandState stateMessage = new AbilityHandState();
-      if (stateListener.readLatestMessage(serialNumber, stateMessage))
+      if (readState(serialNumber, stateMessage))
          return stateMessage;
 
       return null;
