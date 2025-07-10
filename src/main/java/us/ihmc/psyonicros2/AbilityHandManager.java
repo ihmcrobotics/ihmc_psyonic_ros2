@@ -45,7 +45,7 @@ public class AbilityHandManager
     */
    public enum Grip
    {
-      POWER (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{100, 100, 100, 100}, {-75}, {75}}),
+      POWER (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{97.5f, 97.5f, 97.5f, 97.5f}, {-75}, {75}}),
       KEY   (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{90, 90, 90, 90}, {-20}, {75}}),
       TRIPOD(new int[][] {{0, 1, 2, 3}, {5}, {4}}, new float[][] {{60, 60, 20, 20}, {-75}, {60}}),
       RELAX (new int[][] {{4}, {0, 1, 2, 3, 5}},   new float[][] {{30}, {30, 30, 30, 30, -30}}),
