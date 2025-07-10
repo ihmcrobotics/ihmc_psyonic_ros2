@@ -52,7 +52,8 @@ public class AbilityHandManager
       RELAX (new int[][] {{4}, {0, 1, 2, 3, 5}},   new float[][] {{30}, {30, 30, 30, 30, -30}}),
       RUDE  (new int[][] {{0, 1, 2, 3, 4}, {5}},   new float[][] {{100, 10, 100, 100, 20}, {-30}}),
       HOOK  (new int[][] {{0, 1, 2, 3, 4}, {5}},   new float[][] {{70, 70, 70, 70, 10}, {-10}}),
-      PINCH (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new  float[][] {{61, 20, 20, 20}, {-67}, {53}});
+      PINCH_O (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new  float[][] {{61, 20, 20, 20}, {-67}, {53}}),
+      PINCH_C (new int[][] {{0, 1, 2, 3}, {5}, {4}}, new  float[][] {{61, 97.5f, 97.5f, 97.5f}, {-67}, {53}});
 
       /** Array of all grip patterns. */
       public static final Grip[] values = values();
