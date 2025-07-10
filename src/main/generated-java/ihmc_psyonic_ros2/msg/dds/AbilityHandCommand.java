@@ -14,10 +14,13 @@ public class AbilityHandCommand extends Packet<AbilityHandCommand> implements Se
    public static final byte GRIP_CONTROL = (byte) 3;
    public static final byte POWER_GRIP = (byte) 0;
    public static final byte KEY_GRIP = (byte) 1;
-   public static final byte TRIPOD_GRIP = (byte) 2;
+   public static final byte TRIPOD_OPEN_GRIP = (byte) 2;
+   public static final byte TRIPOD_CLOSED_GRIP = (byte) 3;
    public static final byte RELAX_GRIP = (byte) 3;
    public static final byte RUDE_GRIP = (byte) 4;
    public static final byte HOOK_GRIP = (byte) 5;
+   public static final byte PINCH_OPEN_GRIP = (byte) 6;
+   public static final byte PINCH_CLOSED_GRIP = (byte) 7;
    /**
             * The hand's serial number. E.g. 24ABH265
             */
