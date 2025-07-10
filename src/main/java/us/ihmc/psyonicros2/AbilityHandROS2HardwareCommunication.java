@@ -7,10 +7,9 @@ import us.ihmc.ros2.ROS2Publisher;
 import us.ihmc.ros2.ROS2Subscription;
 import us.ihmc.ros2.RealtimeROS2Node;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>High level ROS 2 communication for the {@link AbilityHandInterface}. Communicates with low-level hardware control process.</p>
@@ -26,11 +25,9 @@ public class AbilityHandROS2HardwareCommunication
    private final Map<String, AbilityHandCommand> commandMessages;
    private final ROS2Publisher<AbilityHandCommand> commandPublisher;
 
-   private final List<String> registeredHandSerialNumbers;
-
    public AbilityHandROS2HardwareCommunication(String nodeName)
    {
-      registeredHandSerialNumbers = new ArrayList<>(2);
+      commandMessages = new ConcurrentHashMap<>(2);
 
       node = new ROS2NodeBuilder().buildRealtime(nodeName);
 
@@ -38,15 +35,12 @@ public class AbilityHandROS2HardwareCommunication
       stateListener.onNewHandRegistered(this::registerNewHand);
       stateSubscription = node.createSubscription(AbilityHandROS2API.STATE_TOPIC, stateListener);
 
-      commandMessages = new HashMap<>();
       commandPublisher = node.createPublisher(AbilityHandROS2API.COMMAND_TOPIC);
    }
 
    private void registerNewHand(StringBuilder newHandSerialNumber)
    {
       String serialNumber = newHandSerialNumber.toString();
-      registeredHandSerialNumbers.add(serialNumber);
-
       AbilityHandCommand commandMessage = new AbilityHandCommand();
       commandMessage.setSerialNumber(serialNumber);
       commandMessages.put(serialNumber, commandMessage);
@@ -54,13 +48,13 @@ public class AbilityHandROS2HardwareCommunication
 
    /**
     * <p>Get the serial numbers of the available hands.</p>
-    * <p>Treat the list as read-only.</p>
+    * <p>Treat the set as read-only.</p>
     *
-    * @return List of serial numbers of the available hands.
+    * @return Set of serial numbers of the available hands.
     */
-   public List<String> getAvailableHandSerialNumbers()
+   public Set<String> getAvailableHandSerialNumbers()
    {
-      return registeredHandSerialNumbers;
+      return commandMessages.keySet();
    }
 
    /**
