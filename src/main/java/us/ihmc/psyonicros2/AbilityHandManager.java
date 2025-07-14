@@ -3,7 +3,7 @@ package us.ihmc.psyonicros2;
 import static us.ihmc.psyonicros2.AbilityHandInterface.ACTUATOR_COUNT;
 
 /**
- * Manages high-level control of an Ability Hand, including position, velocity,
+ * Manages higher-level control of an Ability Hand, including position, velocity,
  * velocity-to-position, and multi-stage grip operations.
  */
 public class AbilityHandManager
