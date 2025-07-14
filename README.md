@@ -1,10 +1,10 @@
 # ihmc_psyonic_ros2
-A ROS package for PSYONIC Ability Hands.
-Includes ROS interfaces for commands and statuses, helpful Java classes,
+A ROS 2 package for PSYONIC Ability Hands.
+Includes ROS 2 interfaces for commands and statuses, helpful Java classes,
 meshes of the hand components, and URDF descriptions of the hands.
 
 ## Using ihmc_psyonic_ros2 as a Git Submodule
-You may add ihmc_psyonic_ros2 into your ROS workspace as a git submodule as such:
+You may add ihmc_psyonic_ros2 into your ROS 2 workspace as a git submodule as such:
 
 ```shell
 # cd into the ROS 2 workspace source directory
