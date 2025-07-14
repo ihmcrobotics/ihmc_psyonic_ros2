@@ -80,7 +80,9 @@ public class AbilityHandROS2HardwareCommunication
    /**
     * Read the latest state message of the specified hand.
     *
+    * @param serialNumber  Serial number specifying the hand.
     * @param messageToPack Message to pack with the latest state.
+    * @return {@code true} if a state message was available. {@code false} if no state had been received.
     */
    public boolean readState(String serialNumber, AbilityHandState messageToPack)
    {
@@ -103,9 +105,9 @@ public class AbilityHandROS2HardwareCommunication
    }
 
    /**
-    * <p>Get the command message for the specified hand.</p>.
+    * <p>Get the command message for the specified hand.</p>
     * <p>Use this method to set the desired command values.
-    * Then publish the command using {@link #publishCommand(String)}</p>
+    * Then publish the command using {@link #publishCommand(String)}.</p>
     *
     * @param handSerialNumber Serial number specifying the hand.
     * @return A reference to the command message for the specified hand.
