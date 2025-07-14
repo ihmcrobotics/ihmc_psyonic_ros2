@@ -6,6 +6,9 @@ import us.ihmc.yoVariables.variable.YoEnum;
 
 import static us.ihmc.psyonicros2.AbilityHandInterface.ACTUATOR_COUNT;
 
+/**
+ * A YoVariable-ized version of the {@link AbilityHandManager}.
+ */
 public class YoAbilityHandManager extends AbilityHandManager
 {
    private final YoEnum<ControlMode> controlMode;
@@ -17,7 +20,7 @@ public class YoAbilityHandManager extends AbilityHandManager
    {
       super(hand);
 
-      String prefix = hand.getHandSide().name() + "AbilityHandController";
+      String prefix = hand.getHandSide().name() + super.getClass().getSimpleName();
       controlMode = new YoEnum<>(prefix + "ControlMode", registry, ControlMode.class);
       grip = new YoEnum<>(prefix + "Grip", registry, Grip.class);
       for (int i = 0; i < ACTUATOR_COUNT; ++i)

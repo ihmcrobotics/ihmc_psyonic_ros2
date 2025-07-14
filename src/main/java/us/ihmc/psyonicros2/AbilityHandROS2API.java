@@ -5,7 +5,7 @@ import ihmc_psyonic_ros2.msg.dds.AbilityHandState;
 import us.ihmc.ros2.ROS2Topic;
 
 /**
- * Collection of the ROS 2 topics for communicating with the {@code AbilityHand*Communication} classes.
+ * Collection of the ROS 2 topics for communicating with the {@code AbilityHandROS2*Communication} classes.
  */
 public class AbilityHandROS2API
 {
