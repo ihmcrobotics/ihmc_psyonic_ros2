@@ -11,7 +11,7 @@ You may add ihmc_psyonic_ros2 into your ROS 2 workspace as a git submodule as su
 cd <your_ros2_ws>/src
 
 # Clone ihmc_psyonic_ros2 and set it up as a git submodule
-git submodule add https://github.com/ihmcrobotics/psyonic-ability-hand-java.git
+git submodule add https://github.com/ihmcrobotics/ihmc_psyonic_ros2.git
 
 # Ensure the submodule is initialized as a git repository locally
 git submodule init
