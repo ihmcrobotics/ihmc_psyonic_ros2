@@ -6,6 +6,9 @@ import us.ihmc.yoVariables.variable.YoEnum;
 
 import static us.ihmc.psyonicros2.AbilityHandInterface.ACTUATOR_COUNT;
 
+/**
+ * A YoVariable-ized version of the {@link AbilityHandManager}.
+ */
 public class YoAbilityHandManager extends AbilityHandManager
 {
    private final YoEnum<ControlMode> controlMode;
