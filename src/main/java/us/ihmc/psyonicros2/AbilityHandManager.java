@@ -96,7 +96,7 @@ public class AbilityHandManager
       }
    }
 
-   private static final float TOLERANCE = 2.0f;
+   private static final float TOLERANCE = 2.5f;
    private static final float THUMB_CLEAR_POSITION = 30.0f;
 
    private final AbilityHandInterface hand;
@@ -197,62 +197,64 @@ public class AbilityHandManager
          previousGrip = grip;
       }
 
-      // If we’re past the last stage, the grip is completed. No need to do anything
-      if (gripStage >= grip.stages.length)
-         return;
-
-      // Using velocity to position control
       hand.setCommandType(AbilityHandCommandType.VELOCITY);
 
-      // Move the thumb out of the way before any grip (stage = -1)
+      if (gripStage >= grip.stages.length)
+      {
+         int lastStageIdx = grip.stages.length - 1;
+         int[] finalActuators = grip.stages[lastStageIdx];
+         float[] finalTargets = grip.positions[lastStageIdx];
+
+         boolean allInPosition = true;
+         for (int k = 0; k < finalActuators.length; ++k)
+         {
+            int idx = finalActuators[k];
+            float actual = hand.getActuatorPosition(idx);
+            float desired = finalTargets[k];
+            if (Math.abs(actual - desired) > TOLERANCE)
+            {
+               allInPosition = false;
+               break;
+            }
+         }
+
+         if (!allInPosition)
+         {
+            gripStage = -1;
+         }
+         return;
+      }
       if (gripStage == -1)
       {
-         // Calculate the velocity required to read the clear position
-         float thumbVelocity = calculateVelocityToPosition(4, THUMB_CLEAR_POSITION, goalVelocities[4]);
-
-         // If velocity is 0 or positive, thumb is already clear. Only move thumb if velocity is negative.
-         if (thumbVelocity < 0.0f)
+         float thumbVel = calculateVelocityToPosition(4, THUMB_CLEAR_POSITION, goalVelocities[4]);
+         if (thumbVel < 0.0f)
          {
-            // Tell thumb to move out of the way
-            hand.setCommandValue(4, thumbVelocity);
-
-            // Rest of the fingers shouldn't move
+            hand.setCommandValue(4, thumbVel);
             for (int i = 0; i < ACTUATOR_COUNT; ++i)
                if (i != 4)
                   hand.setCommandValue(i, 0.0f);
-
             return;
          }
          for (int i = 0; i < ACTUATOR_COUNT; ++i)
             hand.setCommandValue(i, 0.0f);
-
-         // Thumb is clear. Start normal grip stages.
          gripStage = 0;
       }
+      int[] toMove = grip.stages[gripStage];
+      float[] targets = grip.positions[gripStage];
+      boolean stageDone = true;
 
-      // Get the actuators that need to move during this stage and their goal positions
-      int[] actuatorsToMove = grip.stages[gripStage];
-      float[] goalPositions = grip.positions[gripStage];
-
-      boolean stageComplete = true;
-      for (int i = 0; i < actuatorsToMove.length; i++)
+      for (int j = 0; j < toMove.length; ++j)
       {
-         int actuatorIndex = actuatorsToMove[i];
-         float goalPosition = goalPositions[i];
-         float goalVelocity = goalVelocities[actuatorIndex];
-
-         float velocity = calculateVelocityToPosition(actuatorIndex, goalPosition, goalVelocity);
-
+         int actuator = toMove[j];
+         float goalPos = targets[j];
+         float velocity = calculateVelocityToPosition(actuator, goalPos, goalVelocities[actuator]);
          if (velocity != 0.0f)
-            stageComplete = false;
-
-         hand.setCommandValue(actuatorIndex, velocity);
+            stageDone = false;
+         hand.setCommandValue(actuator, velocity);
       }
 
-      if (stageComplete)
-      {
+      if (stageDone)
          gripStage++;
-      }
    }
 
    /**
