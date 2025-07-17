@@ -197,10 +197,10 @@ public class AbilityHandManager
          previousGrip = grip;
       }
 
-      // Using velocity of position control
+      // Using velocity to position control
       hand.setCommandType(AbilityHandCommandType.VELOCITY);
 
-      // If we're past the lst stage, need to keep checking we didn't read wrong data
+      // If we're past the last stage, need to keep checking we didn't read wrong data
       if (gripStage >= grip.stages.length)
       {
          int lastStageIdx = grip.stages.length - 1;
@@ -225,17 +225,23 @@ public class AbilityHandManager
          }
          return;
       }
+      // Move the thumb out of the way before any grip (stage = -1)
       if (gripStage == -1)
       {
+         // Calculate the velocity required to read the clear position
          float thumbVelocity = calculateVelocityToPosition(4, THUMB_CLEAR_POSITION, goalVelocities[4]);
+
+         // If velocity is 0 or positive, thumb is already clear. Only move thumb if velocity is negative.
          if (thumbVelocity < 0.0f)
          {
             // Tell thumb to move out of the way
             hand.setCommandValue(4, thumbVelocity);
+
+            // Rest of the fingers shouldn't move
             for (int i = 0; i < ACTUATOR_COUNT; ++i)
                if (i != 4)
-                  // Rest of the fingers shouldn't move
                   hand.setCommandValue(i, 0.0f);
+
             return;
          }
          for (int i = 0; i < ACTUATOR_COUNT; ++i)
@@ -248,20 +254,26 @@ public class AbilityHandManager
       // Get the actuators that need to move during this stage and their goal positions
       int[] actuatorsToMove = grip.stages[gripStage];
       float[] goalPositions = grip.positions[gripStage];
-      boolean stageComplete = true;
 
-      for (int j = 0; j < actuatorsToMove.length; ++j)
+      boolean stageComplete = true;
+      for (int i = 0; i < actuatorsToMove.length; i++)
       {
-         int actuatorIndex = actuatorsToMove[j];
-         float goalPosition = goalPositions[j];
-         float goalVelocity = calculateVelocityToPosition(actuatorIndex, goalPosition, goalVelocities[actuatorIndex]);
-         if (goalVelocity != 0.0f)
+         int actuatorIndex = actuatorsToMove[i];
+         float goalPosition = goalPositions[i];
+         float goalVelocity = goalVelocities[actuatorIndex];
+
+         float velocity = calculateVelocityToPosition(actuatorIndex, goalPosition, goalVelocity);
+
+         if (velocity != 0.0f)
             stageComplete = false;
-         hand.setCommandValue(actuatorIndex, goalVelocity);
+
+         hand.setCommandValue(actuatorIndex, velocity);
       }
 
       if (stageComplete)
+      {
          gripStage++;
+      }
    }
 
    /**
