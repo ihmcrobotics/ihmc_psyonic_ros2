@@ -24,6 +24,7 @@ public class AbilityHandROS2CommunicationTest
    @Test
    public void testControllerCommunication() throws InterruptedException
    {
+      final int domainId = nextDomainId.getAndIncrement();
       final RobotSide HAND_SIDE = RobotSide.LEFT;
       final AbilityHandCommandType COMMAND_TYPE = AbilityHandCommandType.POSITION;
       final float[] COMMAND_VALUES = new float[] {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, -5.0f};
@@ -31,7 +32,7 @@ public class AbilityHandROS2CommunicationTest
       final String SERIAL_NUMBER = "24ABH000";
 
       // Create a node
-      ROS2Node node = new ROS2NodeBuilder().build("abilityTestNode");
+      ROS2Node node = new ROS2NodeBuilder().domainId(domainId).build("abilityTestNode");
 
       // Create a command message and its publisher
       AbilityHandCommand command = new AbilityHandCommand();
@@ -59,8 +60,7 @@ public class AbilityHandROS2CommunicationTest
       testHand.setActuatorPositions(ACTUATOR_POSITIONS); // Set the state of the hand
 
       // Create an instance of the communication class
-      AbilityHandROS2ControllerCommunication controllerCommunication = new AbilityHandROS2ControllerCommunication("test_controller_comm",
-                                                                                                                  nextDomainId.getAndIncrement());
+      AbilityHandROS2ControllerCommunication controllerCommunication = new AbilityHandROS2ControllerCommunication("test_controller_comm", domainId);
 
       // Publish before starting. Nothing should happen
       publisher.publish(command);
@@ -111,6 +111,7 @@ public class AbilityHandROS2CommunicationTest
    @Test
    public void testHardwareCommunication() throws InterruptedException
    {
+      final int domainId = nextDomainId.getAndIncrement();
       final RobotSide HAND_SIDE = RobotSide.LEFT;
       final ControlMode CONTROL_MODE = ControlMode.POSITION;
       final float[] GOAL_POSITIONS = new float[] {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, -5.0f};
@@ -118,7 +119,7 @@ public class AbilityHandROS2CommunicationTest
       final String SERIAL_NUMBER = "24ABH000";
 
       // Create a node
-      ROS2Node node = new ROS2NodeBuilder().build("abilityTestNode");
+      ROS2Node node = new ROS2NodeBuilder().domainId(domainId).build("abilityTestNode");
 
       // Create a state message and its publisher
       AbilityHandState state = new AbilityHandState();
@@ -141,7 +142,7 @@ public class AbilityHandROS2CommunicationTest
       });
 
       // Create the communication instance
-      AbilityHandROS2HardwareCommunication communication = new AbilityHandROS2HardwareCommunication("test_hardware_comm", nextDomainId.getAndIncrement());
+      AbilityHandROS2HardwareCommunication communication = new AbilityHandROS2HardwareCommunication("test_hardware_comm", domainId);
 
       // Publish before starting. Nothing should happen
       statePublisher.publish(state);
