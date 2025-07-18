@@ -11,6 +11,7 @@ import us.ihmc.ros2.ROS2Publisher;
 import us.ihmc.ros2.ROS2Subscription;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +19,8 @@ import static us.ihmc.psyonicros2.AbilityHandInterface.ACTUATOR_COUNT;
 
 public class AbilityHandROS2CommunicationTest
 {
+   private static final AtomicInteger nextDomainId = new AtomicInteger(0);
+
    @Test
    public void testControllerCommunication() throws InterruptedException
    {
@@ -56,7 +59,8 @@ public class AbilityHandROS2CommunicationTest
       testHand.setActuatorPositions(ACTUATOR_POSITIONS); // Set the state of the hand
 
       // Create an instance of the communication class
-      AbilityHandROS2ControllerCommunication controllerCommunication = new AbilityHandROS2ControllerCommunication("test_controller_comm");
+      AbilityHandROS2ControllerCommunication controllerCommunication = new AbilityHandROS2ControllerCommunication("test_controller_comm",
+                                                                                                                  nextDomainId.getAndIncrement());
 
       // Publish before starting. Nothing should happen
       publisher.publish(command);
@@ -137,7 +141,7 @@ public class AbilityHandROS2CommunicationTest
       });
 
       // Create the communication instance
-      AbilityHandROS2HardwareCommunication communication = new AbilityHandROS2HardwareCommunication("test_hardware_comm");
+      AbilityHandROS2HardwareCommunication communication = new AbilityHandROS2HardwareCommunication("test_hardware_comm", nextDomainId.getAndIncrement());
 
       // Publish before starting. Nothing should happen
       statePublisher.publish(state);
