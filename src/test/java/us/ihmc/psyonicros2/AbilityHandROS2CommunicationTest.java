@@ -1,14 +1,9 @@
-package us.ihmc.psyonicros2.test;
+package us.ihmc.psyonicros2;
 
 import ihmc_psyonic_ros2.msg.dds.AbilityHandCommand;
 import ihmc_psyonic_ros2.msg.dds.AbilityHandState;
 import org.junit.jupiter.api.Test;
-import us.ihmc.psyonicros2.AbilityHandCommandType;
-import us.ihmc.psyonicros2.AbilityHandManager;
 import us.ihmc.psyonicros2.AbilityHandManager.ControlMode;
-import us.ihmc.psyonicros2.AbilityHandROS2ControllerCommunication;
-import us.ihmc.psyonicros2.AbilityHandROS2HardwareCommunication;
-import us.ihmc.psyonicros2.AbilityHandROS2API;
 import us.ihmc.robotics.robotSide.RobotSide;
 import us.ihmc.ros2.ROS2Node;
 import us.ihmc.ros2.ROS2NodeBuilder;
