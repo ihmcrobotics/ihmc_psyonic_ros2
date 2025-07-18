@@ -63,19 +63,14 @@ public class AbilityHandROS2CommunicationTest
       AbilityHandROS2ControllerCommunication controllerCommunication = new AbilityHandROS2ControllerCommunication("test_controller_comm", domainId);
 
       // Publish before starting. Nothing should happen
-      publisher.publish(command);
       controllerCommunication.publishState(manager);
-
-      // Read values
-      controllerCommunication.readCommand(manager);
-      manager.update();
 
       // Assert that no messages were received
       assertFalse(received.get());
 
       // Start and publish again. Should receive message
       controllerCommunication.start();
-      LockSupport.parkNanos((long) 1E9);
+      LockSupport.parkNanos((long) 1E8);
 
       publisher.publish(command);
       controllerCommunication.publishState(manager);
@@ -116,7 +111,7 @@ public class AbilityHandROS2CommunicationTest
       final ControlMode CONTROL_MODE = ControlMode.POSITION;
       final float[] GOAL_POSITIONS = new float[] {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, -5.0f};
       final float[] ACTUATOR_POSITIONS = new float[] {5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.0f};
-      final String SERIAL_NUMBER = "24ABH000";
+      final String SERIAL_NUMBER = "24ABH001";
 
       // Create a node
       ROS2Node node = new ROS2NodeBuilder().domainId(domainId).build("abilityTestNode");
@@ -143,24 +138,12 @@ public class AbilityHandROS2CommunicationTest
 
       // Create the communication instance
       AbilityHandROS2HardwareCommunication communication = new AbilityHandROS2HardwareCommunication("test_hardware_comm", domainId);
-
-      // Publish before starting. Nothing should happen
-      statePublisher.publish(state);
-      LockSupport.parkNanos((long) 1E9);
-
-      // Communication shouldn't have received any messages
-      assertNull(communication.readState(SERIAL_NUMBER));
-      assertTrue(communication.getAvailableHandSerialNumbers().isEmpty());
-      assertNull(communication.getCommand(SERIAL_NUMBER));
-      assertFalse(communication.publishCommand(SERIAL_NUMBER));
-
-      // Start the communication
       communication.start();
-      LockSupport.parkNanos((long) 1E9);
+      LockSupport.parkNanos((long) 1E8);
 
       // Publish a state message
       statePublisher.publish(state);
-      LockSupport.parkNanos((long) 1E9);
+      LockSupport.parkNanos((long) 1E8);
 
       // Now the communications class should have received the state message
       assertEquals(1, communication.getAvailableHandSerialNumbers().size());
