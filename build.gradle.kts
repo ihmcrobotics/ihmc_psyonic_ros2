@@ -23,7 +23,8 @@ mainDependencies {
 testDependencies {
    api(ihmc.sourceSetProject("main"))
    api(junit.jupiterApi())
-   api("org.junit.jupiter:junit-jupiter-params:5.13.3")
+   // Must use JUnit version from IHMCCIPlugin.kt https://github.com/ihmcrobotics/ihmc-build/blob/develop/src/main/kotlin/us/ihmc/ci/IHMCCIPlugin.kt
+   api("org.junit.jupiter:junit-jupiter-params:5.9.2")
 }
 
 val generator = us.ihmc.ros2.rosidl.ROS2InterfaceGenerator()

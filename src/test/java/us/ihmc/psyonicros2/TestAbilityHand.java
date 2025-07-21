@@ -1,7 +1,5 @@
-package us.ihmc.psyonicros2.test;
+package us.ihmc.psyonicros2;
 
-import us.ihmc.psyonicros2.AbilityHandCommandType;
-import us.ihmc.psyonicros2.AbilityHandInterface;
 import us.ihmc.robotics.robotSide.RobotSide;
 
 class TestAbilityHand implements AbilityHandInterface

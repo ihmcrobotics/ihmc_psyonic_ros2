@@ -1,15 +1,10 @@
-package us.ihmc.psyonicros2.test;
+package us.ihmc.psyonicros2;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import us.ihmc.psyonicros2.AbilityHandCommandType;
-import us.ihmc.psyonicros2.AbilityHandManager;
 import us.ihmc.psyonicros2.AbilityHandManager.ControlMode;
 import us.ihmc.psyonicros2.AbilityHandManager.Grip;
-import us.ihmc.psyonicros2.AbilityHandInterface;
-import us.ihmc.psyonicros2.YoAbilityHand;
-import us.ihmc.psyonicros2.YoAbilityHandManager;
 import us.ihmc.robotics.robotSide.RobotSide;
 
 import java.util.stream.Stream;
@@ -40,7 +35,7 @@ public class AbilityHandManagerTest
       manager.update();
 
       assertEquals(AbilityHandCommandType.POSITION, hand.getCommandType());
-      for(int i = 0; i < positions.length; i++)
+      for (int i = 0; i < positions.length; i++)
       {
          assertEquals(positions[i], hand.getCommandValue(i), 1e-6f);
       }
@@ -57,7 +52,7 @@ public class AbilityHandManagerTest
       manager.update();
 
       assertEquals(AbilityHandCommandType.VELOCITY, hand.getCommandType());
-      for(int i = 0; i < velocities.length; i++)
+      for (int i = 0; i < velocities.length; i++)
       {
          assertEquals(velocities[i], hand.getCommandValue(i), 1e-6f);
       }
