@@ -22,11 +22,17 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
             * The actuator positions in degrees
             */
    public float[] actuator_positions_;
+   /**
+            * The touch sensor pressure readings in Newtons
+            */
+   public float[] touch_sensor_readings_;
 
    public AbilityHandState()
    {
       serial_number_ = new java.lang.StringBuilder(8);
       actuator_positions_ = new float[6];
+
+      touch_sensor_readings_ = new float[30];
 
    }
 
@@ -46,6 +52,12 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
       for(int i1 = 0; i1 < actuator_positions_.length; ++i1)
       {
             actuator_positions_[i1] = other.actuator_positions_[i1];
+
+      }
+
+      for(int i3 = 0; i3 < touch_sensor_readings_.length; ++i3)
+      {
+            touch_sensor_readings_[i3] = other.touch_sensor_readings_[i3];
 
       }
 
@@ -100,6 +112,15 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
    }
 
 
+   /**
+            * The touch sensor pressure readings in Newtons
+            */
+   public float[] getTouchSensorReadings()
+   {
+      return touch_sensor_readings_;
+   }
+
+
    public static Supplier<AbilityHandStatePubSubType> getPubSubType()
    {
       return AbilityHandStatePubSubType::new;
@@ -121,9 +142,14 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
 
       if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.hand_side_, other.hand_side_, epsilon)) return false;
 
-      for(int i3 = 0; i3 < actuator_positions_.length; ++i3)
+      for(int i5 = 0; i5 < actuator_positions_.length; ++i5)
       {
-                if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.actuator_positions_[i3], other.actuator_positions_[i3], epsilon)) return false;
+                if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.actuator_positions_[i5], other.actuator_positions_[i5], epsilon)) return false;
+      }
+
+      for(int i7 = 0; i7 < touch_sensor_readings_.length; ++i7)
+      {
+                if (!us.ihmc.idl.IDLTools.epsilonEqualsPrimitive(this.touch_sensor_readings_[i7], other.touch_sensor_readings_[i7], epsilon)) return false;
       }
 
 
@@ -143,9 +169,14 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
 
       if(this.hand_side_ != otherMyClass.hand_side_) return false;
 
-      for(int i5 = 0; i5 < actuator_positions_.length; ++i5)
+      for(int i9 = 0; i9 < actuator_positions_.length; ++i9)
       {
-                if(this.actuator_positions_[i5] != otherMyClass.actuator_positions_[i5]) return false;
+                if(this.actuator_positions_[i9] != otherMyClass.actuator_positions_[i9]) return false;
+
+      }
+      for(int i11 = 0; i11 < touch_sensor_readings_.length; ++i11)
+      {
+                if(this.touch_sensor_readings_[i11] != otherMyClass.touch_sensor_readings_[i11]) return false;
 
       }
 
@@ -163,7 +194,9 @@ public class AbilityHandState extends Packet<AbilityHandState> implements Settab
       builder.append("hand_side=");
       builder.append(this.hand_side_);      builder.append(", ");
       builder.append("actuator_positions=");
-      builder.append(java.util.Arrays.toString(this.actuator_positions_));
+      builder.append(java.util.Arrays.toString(this.actuator_positions_));      builder.append(", ");
+      builder.append("touch_sensor_readings=");
+      builder.append(java.util.Arrays.toString(this.touch_sensor_readings_));
       builder.append("}");
       return builder.toString();
    }

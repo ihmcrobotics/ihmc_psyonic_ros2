@@ -4,6 +4,7 @@ import us.ihmc.robotics.robotSide.RobotSide;
 import us.ihmc.yoVariables.registry.YoRegistry;
 import us.ihmc.yoVariables.variable.YoDouble;
 import us.ihmc.yoVariables.variable.YoEnum;
+import us.ihmc.yoVariables.variable.YoInteger;
 
 /**
  * A basic YoVariable-ized implementation of the {@link AbilityHandInterface}.
@@ -17,6 +18,7 @@ public class YoAbilityHand implements AbilityHandInterface
    private final YoEnum<AbilityHandCommandType> commandType;
    private final YoDouble[] commandValues = new YoDouble[ACTUATOR_COUNT];
    private final YoDouble[] actuatorPositions = new YoDouble[ACTUATOR_COUNT];
+   private final YoInteger[] rawFSRReadings = new YoInteger[TOUCH_SENSOR_COUNT];
 
    public YoAbilityHand(YoRegistry registry, String serialNumber, RobotSide handSide)
    {
@@ -34,6 +36,12 @@ public class YoAbilityHand implements AbilityHandInterface
 
          actuatorPositions[i] = new YoDouble(prefix + "ActuatorPosition" + i, registry);
          actuatorPositions[i].set(0.0);
+      }
+
+      for (int i = 0; i < TOUCH_SENSOR_COUNT; ++i)
+      {
+         rawFSRReadings[i] = new YoInteger(prefix + "RawFSR" + i, registry);
+         rawFSRReadings[i].set(0);
       }
    }
 
@@ -83,5 +91,17 @@ public class YoAbilityHand implements AbilityHandInterface
    public void setActuatorPosition(int index, float value)
    {
       actuatorPositions[index].set(value);
+   }
+
+   @Override
+   public int getRawFSRValue(int index)
+   {
+      return rawFSRReadings[index].getValue();
+   }
+
+   @Override
+   public void setRawFSRValue(int index, int value)
+   {
+      rawFSRReadings[index].set(value);
    }
 }

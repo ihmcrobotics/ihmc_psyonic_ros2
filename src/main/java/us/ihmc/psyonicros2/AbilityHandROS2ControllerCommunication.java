@@ -71,6 +71,8 @@ public class AbilityHandROS2ControllerCommunication
       stateMessage.setHandSide(managerToPublish.getHand().getHandSide().toByte());
       for (int i = 0; i < AbilityHandInterface.ACTUATOR_COUNT; ++i)
          stateMessage.getActuatorPositions()[i] = managerToPublish.getHand().getActuatorPosition(i);
+      for (int i = 0; i < AbilityHandInterface.TOUCH_SENSOR_COUNT; ++i)
+         stateMessage.getTouchSensorReadings()[i] = managerToPublish.getHand().getSensedPressure(i);
 
       statePublisher.publish(stateMessage);
    }

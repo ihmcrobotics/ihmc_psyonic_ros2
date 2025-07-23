@@ -15,7 +15,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
    @Override
    public final java.lang.String getDefinitionChecksum()
    {
-   		return "830d7c605596ec4fb4e5ce7b667e6ec743af3a68681cdd902c4fb385180b7794";
+   		return "4189bd96856ab1e75f5e5d3ebbf31bfc23a85d6aeca7c6266493c5080ff251af";
    }
    
    @Override
@@ -57,6 +57,8 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
 
       current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
 
+      current_alignment += ((30) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
+
 
       return current_alignment - initial_alignment;
    }
@@ -76,6 +78,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
 
 
       current_alignment += ((6) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
+      current_alignment += ((30) * 4) + us.ihmc.idl.CDR.alignment(current_alignment, 4);
 
       return current_alignment - initial_alignment;
    }
@@ -93,6 +96,11 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
         	cdr.write_type_5(data.getActuatorPositions()[i0]);	
       }
 
+      for(int i0 = 0; i0 < data.getTouchSensorReadings().length; ++i0)
+      {
+        	cdr.write_type_5(data.getTouchSensorReadings()[i0]);	
+      }
+
    }
 
    public static void read(ihmc_psyonic_ros2.msg.dds.AbilityHandState data, us.ihmc.idl.CDR cdr)
@@ -106,6 +114,12 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
         	
       }
       	
+      for(int i0 = 0; i0 < data.getTouchSensorReadings().length; ++i0)
+      {
+        	data.getTouchSensorReadings()[i0] = cdr.read_type_5();
+        	
+      }
+      	
 
    }
 
@@ -115,6 +129,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
       ser.write_type_d("serial_number", data.getSerialNumber());
       ser.write_type_9("hand_side", data.getHandSide());
       ser.write_type_f("actuator_positions", data.getActuatorPositions());
+      ser.write_type_f("touch_sensor_readings", data.getTouchSensorReadings());
    }
 
    @Override
@@ -123,6 +138,7 @@ public class AbilityHandStatePubSubType implements us.ihmc.pubsub.TopicDataType<
       ser.read_type_d("serial_number", data.getSerialNumber());
       data.setHandSide(ser.read_type_9("hand_side"));
       ser.read_type_f("actuator_positions", data.getActuatorPositions());
+      ser.read_type_f("touch_sensor_readings", data.getTouchSensorReadings());
    }
 
    public static void staticCopy(ihmc_psyonic_ros2.msg.dds.AbilityHandState src, ihmc_psyonic_ros2.msg.dds.AbilityHandState dest)
