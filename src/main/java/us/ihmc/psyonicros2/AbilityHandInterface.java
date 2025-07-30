@@ -6,7 +6,6 @@ import us.ihmc.robotics.robotSide.RobotSide;
  * <p>
  * Generic interface for an Ability Hand.
  * </p>
- * <p>
  * The hand's finger actuators are specified using the following indices:
  *    <ol start = 0>
  *       <li>Index finger</li>
@@ -16,7 +15,6 @@ import us.ihmc.robotics.robotSide.RobotSide;
  *       <li>Thumb flexor</li>
  *       <li>Thumb rotator</li>
  *    </ol>
- * </p>
  * <p>
  * Following the above method, the hand's fingers are specified using indices [0, 4],
  * where 0 = index finger, 1 = middle finger, and so on for the ring, pinky, and thumb fingers.
