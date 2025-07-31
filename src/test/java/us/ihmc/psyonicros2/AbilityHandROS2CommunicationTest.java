@@ -51,12 +51,13 @@ public class AbilityHandROS2CommunicationTest
       AbilityHandState stateReceived = new AbilityHandState();
       ROS2Subscription<AbilityHandState> subscription = node.createSubscription2(AbilityHandROS2API.STATE_TOPIC, stateMessage ->
       {
+         stateReceived.set(stateMessage);
+
          synchronized (received)
          {
             received.set(true);
             received.notify();
          }
-         stateReceived.set(stateMessage);
       });
 
       // Initialize a test hand and its manager
@@ -143,12 +144,13 @@ public class AbilityHandROS2CommunicationTest
       AbilityHandCommand commandReceived = new AbilityHandCommand();
       ROS2Subscription<AbilityHandCommand> subscription = node.createSubscription2(AbilityHandROS2API.COMMAND_TOPIC, commandMessage ->
       {
+         commandReceived.set(commandMessage);
+
          synchronized (received)
          {
             received.set(true);
             received.notify();
          }
-         commandReceived.set(commandMessage);
       });
 
       // Create the communication instance

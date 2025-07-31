@@ -11,8 +11,14 @@ ihmc {
    configureDependencyResolution()
    configurePublications()
 
+   // Generated directories
    resourceDirectory("main", "generated-idl")
    javaDirectory("main", "generated-java")
+
+   // Other resources
+   resourceDirectory("main", "../../msg")
+   resourceDirectory("main", "../../meshes")
+   resourceDirectory("main", "../../urdf")
 }
 
 mainDependencies {
